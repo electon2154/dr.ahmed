@@ -1,0 +1,136 @@
+{%extends 'base.html'%}
+{%load static%}
+
+{%block extra_css%}
+<style>
+    .profile-img {
+        background-image: url('{%static 'images/Doctor Profile Photo.png'%}');
+        background-size: cover;
+        background-position: center;
+        height: 300px;
+        border-radius: 15px;
+    }
+
+    .dash {
+        height: 3px;
+        background-color: #F15A23;
+        stroke: #F15A23;
+        margin-top: auto;
+        margin-bottom: auto;
+        margin-right: 10px;
+    }
+
+    .about-img {
+        background-size: cover;
+        background-position: center;
+        width: 300px;
+        aspect-ratio: 16/19;
+        border-radius: 15px;
+    }
+
+    .map{
+        background-image: url('{%static 'images/map.png'%}');
+        background-size: cover;
+        background-position: center;
+        height: 300px;
+        border-radius: 15px;
+    }
+
+    .avatar{
+        font-size: 24px;
+        background-color: #F15A23;
+        color: #fff;
+        width: 50px;
+        aspect-ratio: 1/1;
+        border-radius: 50%;
+        margin-right: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        vertical-align: middle;
+        align-items: center;
+    }
+
+    @media screen and (max-width: 470px) {
+        .about-img {
+            width: 135px;
+        }
+    }
+
+    /* at medium screens */
+    @media screen and (max-width: 768px) {
+        .about-img {
+            width: 150px;
+        }
+    }
+</style>
+{%endblock%}
+
+{%block content%}
+<br>
+
+<br>
+    <div class="row d-flex flex-row justify-content-center">
+        <div class="col-12 col-md-8 d-flex flex-column justify-content-start">
+            <div class="d-flex flex-row justify-content-start">
+                <div class="col-1 dash"></div>
+            <h2 class="text-start">About Us</h2>
+            </div>
+            <h5 class="text-end">Welcome to Back To Nature, where science meets the purity of nature to bring you premium skincare and haircare solutions. Founded by Prof. Dr. Ahmed Hashim Al-Rifai, an esteemed professor of industrial pharmacy, our mission is to combine decades of scientific expertise with the healing power of natural ingredients to create products that are both safe and effective.</h5>
+        </div>
+        <div class="col-6 col-md-3 profile-img">
+        </div>
+    </div>
+
+    <br>
+    <div class="d-none d-md-block">
+        <br><br><br><br><br>
+    </div>
+    
+    <div class="row d-flex flex-row justify-content-around">
+        <div class="about-img" style="background-image: url('{%static 'images/about-img-1.png'%}');"></div>
+        <div class="about-img" style="background-image: url('{%static 'images/about-img-2.png'%}');"></div>
+        <div class="about-img" style="background-image: url('{%static 'images/about-img-3.png'%}');"></div> 
+    </div>
+
+    <br>
+
+    <h5 class="text-center">In a world filled with chemical-laden products that promise results but often compromise your health, Back To Nature offers a different path. Our formulations are carefully designed to nourish, restore, and protect your skin and hair, delivering real results while keeping your well-being our top priority. Every ingredient is hand-selected for its purity, effectiveness, and compatibility with your body’s natural balance.</h4>
+
+    <br>
+
+    <div class="row d-flex flex-row justify-content-center">
+        <div class="col-12 col-md-7 map"></div>
+        <div class="col-10 col-md-4 d-flex flex-column justify-content-around">
+            <h2 class="text-center mt-3">Contact Us</h2>
+            <div class="d-flex flex-row justify-content-start align-items-center py-2">
+                <div class="avatar">
+                    <i class="fa-solid fa-envelope m-2"></i>
+                </div>
+                <div class="column">
+                    <h4 class="m-0">Email Address</h4>
+                    <p class="m-0">info@backtonature.com</p>
+                </div>
+            </div>
+            <div class="d-flex flex-row justify-content-start align-items-center py-2">
+                <div class="avatar">
+                    <i class="fa-solid fa-phone m-2"></i>
+                </div>
+                <div class="column">
+                    <h4 class="m-0">Phone Number</h4>
+                    <p class="m-0">+966 555 555 555</p>
+                </div>
+            </div>
+            <div class="d-flex flex-row justify-content-start align-items-center py-2">
+                <div class="avatar">
+                    <i class="fa-solid fa-location-dot m-2"></i>
+                </div>
+                <div class="column">
+                    <h4 class="m-0">Address</h4>
+                    <p class="m-0">123 Main St, Anytown, USA</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{%endblock%}

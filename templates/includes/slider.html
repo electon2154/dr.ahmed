@@ -1,0 +1,37 @@
+<!-- Bootstrap 5 Carousel -->
+ {%load static%}
+<div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
+  <!-- Indicators -->
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active"></button>
+    <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1"></button>
+    <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="2"></button>
+  </div>
+  <!-- Slides -->
+  <div class="carousel-inner position-relative">
+    <div class="carousel-item active">
+      <img src="{%static 'images\slider-1.png'%}" class="d-block w-100" alt="Image 1">
+    </div>
+    <div class="carousel-item">
+      <img src="{%static 'images\slider-1.png'%}" class="d-block w-100" alt="Image 2">
+    </div>
+    <div class="carousel-item">
+      <img src="{%static 'images\slider-1.png'%}" class="d-block w-100" alt="Image 3">
+    </div>
+    <img src="{%static 'images\slider-border.png'%}" class="position-absolute col-11 top-50 start-50 translate-middle" alt="Image 1">
+    <div class="position-absolute col-11 top-50 start-50 translate-middle d-flex flex-column align-items-center justify-content-around">
+        <img src="{%static 'images\slider-logo.png'%}" class="col-1" alt="logo">
+        <br class="d-none d-md-block">
+        <p class="col-10 text-white text-center">تركيبة علمية مبتكرة لمحاربة الكلف والتصبغات, مزيج من المكونات الطبيعية الفعالة, لطيفة على البشرة قوية على البقع
+</p>
+    </div>
+  </div>
+
+  <!-- Controls (prev/next) -->
+  <!-- <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </button> -->
+</div>

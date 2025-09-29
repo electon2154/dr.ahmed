@@ -1,0 +1,553 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% if product %}Edit Product{% else %}Add Product{% endif %} - Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background: #f8f9fa;
+        min-height: 100vh;
+    }
+    
+    .form-header {
+        background: linear-gradient(135deg, #F15A23 0%, #e74c3c 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(241, 90, 35, 0.3);
+        text-align: center;
+    }
+    
+    .form-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin: 0;
+    }
+    
+    .form-subtitle {
+        margin-top: 10px;
+        opacity: 0.9;
+        font-size: 1.1rem;
+    }
+    
+    .form-card {
+        background: white;
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .form-group {
+        margin-bottom: 25px;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+        font-size: 1.1rem;
+    }
+    
+    .form-input {
+        width: 100%;
+        padding: 15px 20px;
+        border: 2px solid #dee2e6;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+    }
+    
+    .form-input:focus {
+        outline: none;
+        border-color: #F15A23;
+        box-shadow: 0 0 0 3px rgba(241, 90, 35, 0.1);
+    }
+    
+    .form-textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+    
+    .form-select {
+        width: 100%;
+        padding: 15px 20px;
+        border: 2px solid #dee2e6;
+        border-radius: 10px;
+        font-size: 1rem;
+        background: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .form-select:focus {
+        outline: none;
+        border-color: #F15A23;
+        box-shadow: 0 0 0 3px rgba(241, 90, 35, 0.1);
+    }
+    
+    .form-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    
+    .form-checkbox input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+    }
+    
+    .form-checkbox label {
+        margin: 0;
+        cursor: pointer;
+        font-weight: 500;
+    }
+    
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+    
+    .file-input-wrapper {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+    }
+    
+    .file-input {
+        width: 100%;
+        padding: 15px 20px;
+        border: 2px dashed #dee2e6;
+        border-radius: 10px;
+        background: #f8f9fa;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+        color: #6c757d;
+    }
+    
+    .file-input:hover {
+        border-color: #F15A23;
+        background: rgba(241, 90, 35, 0.05);
+    }
+    
+    .file-input input[type="file"] {
+        position: absolute;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+    }
+    
+    .current-image {
+        margin-top: 15px;
+        text-align: center;
+    }
+    
+    .current-image img {
+        max-width: 200px;
+        max-height: 200px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .form-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 40px;
+        flex-wrap: wrap;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #F15A23 0%, #e74c3c 100%);
+        color: white;
+        border: none;
+        padding: 15px 40px;
+        border-radius: 25px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 5px 15px rgba(241, 90, 35, 0.3);
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(241, 90, 35, 0.4);
+    }
+    
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+        border: none;
+        padding: 15px 40px;
+        border-radius: 25px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+    }
+    
+    .btn-secondary:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .error-message {
+        color: #dc3545;
+        font-size: 0.9rem;
+        margin-top: 5px;
+        display: block;
+    }
+    
+    .success-message {
+        background: #d4edda;
+        color: #155724;
+        padding: 15px 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #c3e6cb;
+    }
+    
+    .help-text {
+        font-size: 0.9rem;
+        color: #6c757d;
+        margin-top: 5px;
+    }
+    
+    @media (max-width: 768px) {
+        .form-container {
+            padding: 10px;
+        }
+        
+        .form-card {
+            padding: 20px;
+        }
+        
+        .form-title {
+            font-size: 1.8rem;
+        }
+        
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+        
+        .form-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .btn-primary,
+        .btn-secondary {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <!-- Form Header -->
+    <div class="form-header">
+        <h1 class="form-title">
+            {% if product %}
+                <i class="fas fa-edit"></i>
+                Edit Product
+            {% else %}
+                <i class="fas fa-plus-circle"></i>
+                Add New Product
+            {% endif %}
+        </h1>
+        <p class="form-subtitle">
+            {% if product %}
+                Update product information and inventory
+            {% else %}
+                Fill in the details to add a new product to your inventory
+            {% endif %}
+        </p>
+    </div>
+    
+    <!-- Form Card -->
+    <div class="form-card">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="success-message">
+                    <i class="fas fa-check-circle"></i>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        <form method="post" enctype="multipart/form-data" id="productForm">
+            {% csrf_token %}
+            
+            <!-- Product Name -->
+            <div class="form-group">
+                <label for="id_name" class="form-label">
+                    <i class="fas fa-tag"></i>
+                    Product Name *
+                </label>
+                <input type="text" 
+                       name="name" 
+                       id="id_name" 
+                       class="form-input" 
+                       value="{{ form.name.value|default:'' }}"
+                       placeholder="Enter product name"
+                       required>
+                {% if form.name.errors %}
+                    {% for error in form.name.errors %}
+                        <span class="error-message">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            
+            <!-- Category and Price Row -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id_category" class="form-label">
+                        <i class="fas fa-list"></i>
+                        Category *
+                    </label>
+                    <input type="text" 
+                           name="category" 
+                           id="id_category" 
+                           class="form-input" 
+                           value="{{ form.category.value|default:'' }}"
+                           placeholder="e.g., Skincare, Moisturizer"
+                           required>
+                    {% if form.category.errors %}
+                        {% for error in form.category.errors %}
+                            <span class="error-message">{{ error }}</span>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_price" class="form-label">
+                        <i class="fas fa-dollar-sign"></i>
+                        Price (IQD) *
+                    </label>
+                    <input type="number" 
+                           name="price" 
+                           id="id_price" 
+                           class="form-input" 
+                           value="{{ form.price.value|default:'' }}"
+                           placeholder="0.00"
+                           step="0.01"
+                           min="0"
+                           required>
+                    {% if form.price.errors %}
+                        {% for error in form.price.errors %}
+                            <span class="error-message">{{ error }}</span>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Stock and Discount Row -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id_stock" class="form-label">
+                        <i class="fas fa-boxes"></i>
+                        Stock Quantity *
+                    </label>
+                    <input type="number" 
+                           name="stock" 
+                           id="id_stock" 
+                           class="form-input" 
+                           value="{{ form.stock.value|default:'' }}"
+                           placeholder="0"
+                           min="0"
+                           required>
+                    {% if form.stock.errors %}
+                        {% for error in form.stock.errors %}
+                            <span class="error-message">{{ error }}</span>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_discount" class="form-label">
+                        <i class="fas fa-percent"></i>
+                        Discount (IQD)
+                    </label>
+                    <input type="number" 
+                           name="discount" 
+                           id="id_discount" 
+                           class="form-input" 
+                           value="{{ form.discount.value|default:'' }}"
+                           placeholder="0.00"
+                           step="0.01"
+                           min="0">
+                    <div class="help-text">Optional: Enter discount amount in IQD</div>
+                    {% if form.discount.errors %}
+                        {% for error in form.discount.errors %}
+                            <span class="error-message">{{ error }}</span>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Description -->
+            <div class="form-group">
+                <label for="id_description" class="form-label">
+                    <i class="fas fa-align-left"></i>
+                    Description *
+                </label>
+                <textarea name="description" 
+                          id="id_description" 
+                          class="form-input form-textarea" 
+                          placeholder="Enter detailed product description"
+                          required>{{ form.description.value|default:'' }}</textarea>
+                {% if form.description.errors %}
+                    {% for error in form.description.errors %}
+                        <span class="error-message">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            
+            <!-- Product Image -->
+            <div class="form-group">
+                <label for="id_image" class="form-label">
+                    <i class="fas fa-image"></i>
+                    Product Image
+                </label>
+                <div class="file-input-wrapper">
+                    <div class="file-input">
+                        <input type="file" 
+                               name="image" 
+                               id="id_image" 
+                               accept="image/*"
+                               onchange="previewImage(this)">
+                        <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; margin-bottom: 10px;"></i><br>
+                        <strong>Click to upload image</strong><br>
+                        <small>Supported formats: JPG, PNG, GIF (Max: 5MB)</small>
+                    </div>
+                </div>
+                
+                {% if product and product.image %}
+                    <div class="current-image">
+                        <p><strong>Current Image:</strong></p>
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" id="currentImage">
+                    </div>
+                {% endif %}
+                
+                <div class="current-image" id="imagePreview" style="display: none;">
+                    <p><strong>New Image Preview:</strong></p>
+                    <img id="previewImg" style="max-width: 200px; max-height: 200px; border-radius: 10px;">
+                </div>
+                
+                {% if form.image.errors %}
+                    {% for error in form.image.errors %}
+                        <span class="error-message">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            
+            <!-- Availability Checkbox -->
+            <div class="form-group">
+                <div class="form-checkbox">
+                    <input type="checkbox" 
+                           name="is_available" 
+                           id="id_is_available" 
+                           {% if form.is_available.value %}checked{% endif %}>
+                    <label for="id_is_available">
+                        <i class="fas fa-check-circle"></i>
+                        Product is available for sale
+                    </label>
+                </div>
+                {% if form.is_available.errors %}
+                    {% for error in form.is_available.errors %}
+                        <span class="error-message">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            
+            <!-- Form Buttons -->
+            <div class="form-buttons">
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-save"></i>
+                    {% if product %}Update Product{% else %}Add Product{% endif %}
+                </button>
+                <a href="{% url 'dashboard' %}" class="btn-secondary">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Dashboard
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Image Preview Function
+function previewImage(input) {
+    const preview = document.getElementById('imagePreview');
+    const previewImg = document.getElementById('previewImg');
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            preview.style.display = 'block';
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        preview.style.display = 'none';
+    }
+}
+
+// Form Validation
+document.getElementById('productForm').addEventListener('submit', function(e) {
+    const name = document.getElementById('id_name').value.trim();
+    const category = document.getElementById('id_category').value.trim();
+    const price = document.getElementById('id_price').value;
+    const stock = document.getElementById('id_stock').value;
+    const description = document.getElementById('id_description').value.trim();
+    
+    if (!name || !category || !price || !stock || !description) {
+        e.preventDefault();
+        alert('Please fill in all required fields.');
+        return false;
+    }
+    
+    if (parseFloat(price) < 0) {
+        e.preventDefault();
+        alert('Price cannot be negative.');
+        return false;
+    }
+    
+    if (parseInt(stock) < 0) {
+        e.preventDefault();
+        alert('Stock quantity cannot be negative.');
+        return false;
+    }
+    
+    // Show loading state
+    const submitBtn = this.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+});
+</script>
+{% endblock %}

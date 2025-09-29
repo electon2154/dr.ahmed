@@ -1,0 +1,421 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    .product-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        min-height: 100vh;
+    }
+    
+    .product-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        display: flex;
+        min-height: 500px;
+    }
+    
+    .product-image-section {
+        flex: 1;
+        padding: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        position: relative;
+    }
+    
+    .product-image {
+        max-width: 100%;
+        max-height: 400px;
+        object-fit: contain;
+    }
+    
+    .product-details-section {
+        flex: 1;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    
+    .product-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 30px;
+        line-height: 1.3;
+        padding-bottom: 15px;
+    }
+    
+    .product-specs {
+        margin-bottom: 30px;
+    }
+    
+    .spec-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px dotted #dee2e6;
+        font-size: 16px;
+    }
+    
+    .spec-label {
+        font-weight: 600;
+        color: #495057;
+    }
+    
+    .spec-value {
+        color: #6c757d;
+        background: #f8f9fa;
+        padding: 4px 12px;
+        border-radius: 15px;
+    }
+    
+    .product-price {
+        font-size: 24px;
+        font-weight: 800;
+        color: #e74c3c;
+        margin-bottom: 25px;
+        padding: 15px;
+        background: linear-gradient(135deg, #fff5f5 0%, #ffe6e6 100%);
+        border-radius: 15px;
+        border: 2px dotted #e74c3c;
+        text-align: center;
+    }
+    
+    .quantity-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 25px;
+        gap: 15px;
+    }
+    
+    .quantity-btn {
+        width: 40px;
+        height: 40px;
+        border: 2px solid #6c757d;
+        background: white;
+        color: #6c757d;
+        border-radius: 50%;
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .quantity-btn:hover {
+        background: #6c757d;
+        color: white;
+        transform: scale(1.1);
+    }
+    
+    .quantity-input {
+        width: 80px;
+        height: 40px;
+        text-align: center;
+        border: 2px solid #dee2e6;
+        border-radius: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        background: #f8f9fa;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+    }
+    
+    .add-to-cart-btn {
+        flex: 1;
+        background: linear-gradient(135deg, #F15A23 0%, #e74c3c 100%);
+        color: white;
+        border: none;
+        padding: 15px 25px;
+        border-radius: 25px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        box-shadow: 0 5px 15px rgba(241, 90, 35, 0.3);
+    }
+    
+    .add-to-cart-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(241, 90, 35, 0.4);
+    }
+    
+    .wishlist-btn, .share-btn {
+        width: 50px;
+        height: 50px;
+        border: 2px;
+        background: white;
+        /* color: #007bff; */
+        border-radius: 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+    }
+    
+    .wishlist-btn:hover, .share-btn:hover {
+        background: #ff0000;
+        color: white;
+        transform: scale(1.1);
+    }
+    
+    /* Responsive Design */
+    @media screen and (max-width: 992px) {
+        .product-card {
+            flex-direction: column;
+        }
+        
+    }
+    
+    @media screen and (max-width: 768px) {
+        .product-container {
+            padding: 20px 10px;
+        }
+        
+        .product-image-section,
+        .product-details-section {
+            padding: 20px;
+        }
+        
+        .product-title {
+            font-size: 22px;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+        
+        .add-to-cart-btn {
+            width: 100%;
+        }
+        
+        .wishlist-btn, .share-btn {
+            width: 100%;
+            height: 45px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="product-container">
+    <div class="product-card">
+        <!-- Product Image Section -->
+        <div class="product-image-section">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+            {% else %}
+                <img src="{% static 'images/product1.png' %}" alt="{{ product.name|default:'Product' }}" class="product-image">
+            {% endif %}
+        </div>
+        
+        <!-- Product Details Section -->
+        <div class="product-details-section">
+            <div>
+                <h1 class="product-title">{{ product.name|default:'Body Butter Jar Cream Care, Name of product 120g' }}</h1>
+                
+                <div class="product-specs">
+                    <div class="spec-item">
+                        <span class="spec-label">Product type :</span>
+                        <span class="spec-value">{{ product.category|default:'Moisturizer & Lotion' }}</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Description :</span>
+                        <span class="spec-value">{{ product.description|default:'All skin types'|truncatechars:50 }}</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Availability :</span>
+                        <span class="spec-value">
+                            {% if product.is_available and product.stock > 0 %}
+                                In stock ({{ product.stock }} available)
+                            {% else %}
+                                Out of stock
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="product-price">
+                    {% if product.discount and product.discount > 0 %}
+                        <span style="text-decoration: line-through; color: #6c757d; font-size: 18px;">{{ product.price|floatformat:3 }} IQD</span><br>
+                        <span>{{ product.get_discounted_price|floatformat:3 }} IQD</span>
+                        <small style="color: #28a745; font-size: 14px;">({{ product.discount }}% off)</small>
+                    {% else %}
+                        {{ product.price|default:'20.000'|floatformat:3 }} IQD
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div>
+                {% if product.is_available and product.stock > 0 %}
+                    <div class="quantity-section">
+                        <button class="quantity-btn" onclick="decreaseQuantity()">-</button>
+                        <input type="number" value="1" min="1" max="{{ product.stock|default:10 }}" class="quantity-input" id="quantity">
+                        <button class="quantity-btn" onclick="increaseQuantity()">+</button>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="add-to-cart-btn" onclick="addToCart()" id="add-to-cart-btn">
+                            <i class="fas fa-shopping-bag"></i>
+                            اضف إلى السلة
+                        </button>
+                        <button class="wishlist-btn" onclick="addToWishlist()">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        <button class="share-btn" onclick="shareProduct()">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                    </div>
+                {% else %}
+                    <div class="action-buttons">
+                        <button class="add-to-cart-btn" disabled style="background: #6c757d; cursor: not-allowed;">
+                            <i class="fas fa-times"></i>
+                            غير متوفر
+                        </button>
+                        <button class="wishlist-btn" onclick="addToWishlist()">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        <button class="share-btn" onclick="shareProduct()">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+const csrftoken = getCookie('csrftoken');
+
+function increaseQuantity() {
+    const quantityInput = document.getElementById('quantity');
+    const maxQuantity = parseInt(quantityInput.getAttribute('max'));
+    const currentValue = parseInt(quantityInput.value);
+    
+    if (currentValue < maxQuantity) {
+        quantityInput.value = currentValue + 1;
+    }
+}
+
+function decreaseQuantity() {
+    const quantityInput = document.getElementById('quantity');
+    if (parseInt(quantityInput.value) > 1) {
+        quantityInput.value = parseInt(quantityInput.value) - 1;
+    }
+}
+
+function addToCart() {
+    const quantity = document.getElementById('quantity').value;
+    const productId = parseInt('{{ product.id|default:1 }}');
+    const addButton = document.getElementById('add-to-cart-btn');
+    
+    // Disable button and show loading state
+    addButton.disabled = true;
+    addButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإضافة...';
+    
+    fetch('/cart/add/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify({
+            'product_id': productId,
+            'quantity': parseInt(quantity)
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show success message
+            addButton.innerHTML = '<i class="fas fa-check"></i> تم الإضافة!';
+            addButton.style.background = '#28a745';
+            
+            // Reset button after 2 seconds
+            setTimeout(() => {
+                addButton.disabled = false;
+                addButton.innerHTML = '<i class="fas fa-shopping-bag"></i> اضف إلى السلة';
+                addButton.style.background = 'linear-gradient(135deg, #F15A23 0%, #e74c3c 100%)';
+            }, 2000);
+            
+            // Update cart count if there's a cart counter in the navigation
+            const cartCounter = document.querySelector('.cart-count');
+            if (cartCounter) {
+                cartCounter.textContent = data.cart_count;
+            }
+        } else {
+            alert('خطأ: ' + data.message);
+            addButton.disabled = false;
+            addButton.innerHTML = '<i class="fas fa-shopping-bag"></i> اضف إلى السلة';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('حدث خطأ أثناء إضافة المنتج إلى السلة');
+        addButton.disabled = false;
+        addButton.innerHTML = '<i class="fas fa-shopping-bag"></i> اضف إلى السلة';
+    });
+}
+
+function addToWishlist() {
+    alert('تم إضافة المنتج إلى قائمة الأمنيات');
+    // Add your wishlist logic here
+}
+
+function shareProduct() {
+    const productName = '{{ product.name|default:"Body Butter Jar Cream Care"|escapejs }}';
+    
+    if (navigator.share) {
+        navigator.share({
+            title: productName,
+            text: 'Check out this amazing skincare product!',
+            url: window.location.href
+        });
+    } else {
+        // Fallback for browsers that don't support Web Share API
+        const url = window.location.href;
+        navigator.clipboard.writeText(url).then(() => {
+            alert('تم نسخ رابط المنتج');
+        });
+    }
+}
+</script>
+{% endblock %}

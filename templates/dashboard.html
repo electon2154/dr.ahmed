@@ -1,0 +1,750 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - Product Management{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background: #f8f9fa;
+        min-height: 100vh;
+    }
+    
+    .dashboard-header {
+        background: linear-gradient(135deg, #F15A23 0%, #e74c3c 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(241, 90, 35, 0.3);
+    }
+    
+    .dashboard-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0;
+        text-align: center;
+    }
+    
+    .dashboard-subtitle {
+        text-align: center;
+        margin-top: 10px;
+        opacity: 0.9;
+        font-size: 1.1rem;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .stat-card {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #F15A23;
+        margin-bottom: 10px;
+    }
+    
+    .stat-label {
+        color: #6c757d;
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+    
+    .action-section {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+    
+    .section-title {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .add-product-btn {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 25px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+    }
+    
+    .add-product-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .table-container {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .products-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+    }
+    
+    .products-table th {
+        background: #f8f9fa;
+        padding: 20px 15px;
+        text-align: left;
+        font-weight: 600;
+        color: #333;
+        border-bottom: 2px solid #dee2e6;
+        white-space: nowrap;
+    }
+    
+    .products-table td {
+        padding: 15px;
+        border-bottom: 1px solid #dee2e6;
+        vertical-align: middle;
+    }
+    
+    .products-table tr:hover {
+        background: #f8f9fa;
+    }
+    
+    /* Mobile Card Layout */
+    .product-card {
+        display: none;
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 15px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        border-left: 4px solid #F15A23;
+    }
+    
+    .product-card-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .product-card-body {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .product-card-field {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .product-card-label {
+        font-size: 0.85rem;
+        color: #6c757d;
+        font-weight: 600;
+        margin-bottom: 5px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .product-card-value {
+        font-size: 1rem;
+        color: #333;
+        font-weight: 500;
+    }
+    
+    .product-card-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        padding-top: 15px;
+        border-top: 1px solid #dee2e6;
+    }
+    
+    .product-image {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+    
+    .product-name {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 5px;
+    }
+    
+    .product-category {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+    
+    .price-display {
+        font-weight: 600;
+        color: #F15A23;
+        font-size: 1.1rem;
+    }
+    
+    .stock-badge {
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+    
+    .stock-in {
+        background: #d4edda;
+        color: #155724;
+    }
+    
+    .stock-low {
+        background: #fff3cd;
+        color: #856404;
+    }
+    
+    .stock-out {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .btn-edit {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .btn-edit:hover {
+        background: #0056b3;
+        color: white;
+        text-decoration: none;
+    }
+    
+    .btn-delete {
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .btn-delete:hover {
+        background: #c82333;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #6c757d;
+    }
+    
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        opacity: 0.5;
+    }
+    
+    .search-filter {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+    
+    .search-input {
+        flex: 1;
+        min-width: 250px;
+        padding: 12px 20px;
+        border: 2px solid #dee2e6;
+        border-radius: 25px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+    }
+    
+    .search-input:focus {
+        outline: none;
+        border-color: #F15A23;
+    }
+    
+    .filter-select {
+        padding: 12px 20px;
+        border: 2px solid #dee2e6;
+        border-radius: 25px;
+        font-size: 1rem;
+        background: white;
+        cursor: pointer;
+    }
+    
+    /* Tablet Styles */
+    @media (max-width: 1024px) and (min-width: 769px) {
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        .products-table {
+            min-width: 800px;
+        }
+        
+        .products-table th,
+        .products-table td {
+            padding: 12px 10px;
+            font-size: 0.9rem;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .btn-edit,
+        .btn-delete {
+            font-size: 0.8rem;
+            padding: 6px 12px;
+        }
+    }
+    
+    /* Mobile Styles */
+    @media (max-width: 768px) {
+        .dashboard-container {
+            padding: 10px;
+        }
+        
+        .dashboard-title {
+            font-size: 2rem;
+        }
+        
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .search-filter {
+            flex-direction: column;
+        }
+        
+        .search-input {
+            min-width: 100%;
+        }
+        
+        /* Hide table, show cards */
+        .table-container {
+            display: none;
+        }
+        
+        .product-card {
+            display: block;
+        }
+        
+        .product-card-body {
+            grid-template-columns: 1fr;
+        }
+        
+        .action-buttons {
+            justify-content: center;
+        }
+    }
+    
+    /* Small Mobile Styles */
+    @media (max-width: 480px) {
+        .dashboard-header {
+            padding: 20px 15px;
+        }
+        
+        .dashboard-title {
+            font-size: 1.8rem;
+        }
+        
+        .action-section {
+            padding: 20px 15px;
+        }
+        
+        .product-card {
+            padding: 15px;
+        }
+        
+        .product-card-header {
+            flex-direction: column;
+            text-align: center;
+            gap: 10px;
+        }
+        
+        .btn-edit,
+        .btn-delete {
+            flex: 1;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">Product Management Dashboard</h1>
+        <p class="dashboard-subtitle">Manage your products, inventory, and sales</p>
+    </div>
+    
+    <!-- Statistics Cards -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number">{{ total_products|default:0 }}</div>
+            <div class="stat-label">Total Products</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ in_stock_products|default:0 }}</div>
+            <div class="stat-label">In Stock</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ low_stock_products|default:0 }}</div>
+            <div class="stat-label">Low Stock</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ out_of_stock_products|default:0 }}</div>
+            <div class="stat-label">Out of Stock</div>
+        </div>
+    </div>
+    
+    <!-- Add Product Section -->
+    <div class="action-section">
+        <h2 class="section-title">
+            <i class="fas fa-plus-circle"></i>
+            Quick Actions
+        </h2>
+        <a href="{% url 'add_product' %}" class="add-product-btn">
+            <i class="fas fa-plus"></i>
+            Add New Product
+        </a>
+    </div>
+    
+    <!-- Products List Section -->
+    <div class="action-section">
+        <h2 class="section-title">
+            <i class="fas fa-box"></i>
+            Products Inventory
+        </h2>
+        
+        <!-- Search and Filter -->
+        <div class="search-filter">
+            <input type="text" class="search-input" placeholder="Search products..." id="searchInput">
+            <select class="filter-select" id="categoryFilter">
+                <option value="">All Categories</option>
+                {% for category in categories %}
+                    <option value="{{ category }}">{{ category }}</option>
+                {% endfor %}
+            </select>
+            <select class="filter-select" id="stockFilter">
+                <option value="">All Stock Status</option>
+                <option value="in_stock">In Stock</option>
+                <option value="low_stock">Low Stock</option>
+                <option value="out_of_stock">Out of Stock</option>
+            </select>
+        </div>
+        
+        {% if products %}
+            <!-- Desktop/Tablet Table View -->
+            <div class="table-container" id="tableView">
+                <table class="products-table" id="productsTable">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                            <tr data-category="{{ product.category }}" data-stock="{% if product.stock > 10 %}in_stock{% elif product.stock > 0 %}low_stock{% else %}out_of_stock{% endif %}">
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 15px;">
+                                        {% if product.image %}
+                                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                                        {% else %}
+                                            <div class="product-image" style="background: #f8f9fa; display: flex; align-items: center; justify-content: center; color: #6c757d;">
+                                                <i class="fas fa-image"></i>
+                                            </div>
+                                        {% endif %}
+                                        <div>
+                                            <div class="product-name">{{ product.name }}</div>
+                                            <div class="product-category">{{ product.description|truncatechars:50 }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{{ product.category }}</td>
+                                <td>
+                                    <div class="price-display">
+                                        {% if product.discount and product.discount > 0 %}
+                                            <span style="text-decoration: line-through; color: #6c757d; font-size: 0.9rem;">{{ product.price|floatformat:3 }} IQD</span><br>
+                                            {{ product.get_discounted_price|floatformat:3 }} IQD
+                                        {% else %}
+                                            {{ product.price|floatformat:3 }} IQD
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                <td>{{ product.stock }}</td>
+                                <td>
+                                    {% if product.stock > 10 %}
+                                        <span class="stock-badge stock-in">In Stock</span>
+                                    {% elif product.stock > 0 %}
+                                        <span class="stock-badge stock-low">Low Stock</span>
+                                    {% else %}
+                                        <span class="stock-badge stock-out">Out of Stock</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a href="{% url 'edit_product' product.id %}" class="btn-edit">
+                                            <i class="fas fa-edit"></i>
+                                            Edit
+                                        </a>
+                                        <button class="btn btn-danger btn-sm" onclick="deleteProduct({{ product.id }}, `{{ product.name|escapejs }}`)">
+                                             <i class="fas fa-trash"></i>
+                                             Delete
+                                         </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Mobile Card View -->
+            <div class="mobile-cards" id="cardView">
+                {% for product in products %}
+                    <div class="product-card" data-category="{{ product.category }}" data-stock="{% if product.stock > 10 %}in_stock{% elif product.stock > 0 %}low_stock{% else %}out_of_stock{% endif %}">
+                        <div class="product-card-header">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                            {% else %}
+                                <div class="product-image" style="background: #f8f9fa; display: flex; align-items: center; justify-content: center; color: #6c757d;">
+                                    <i class="fas fa-image"></i>
+                                </div>
+                            {% endif %}
+                            <div>
+                                <div class="product-name">{{ product.name }}</div>
+                                <div class="product-category">{{ product.description|truncatechars:50 }}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="product-card-body">
+                            <div class="product-card-field">
+                                <div class="product-card-label">Category</div>
+                                <div class="product-card-value">{{ product.category }}</div>
+                            </div>
+                            
+                            <div class="product-card-field">
+                                <div class="product-card-label">Price</div>
+                                <div class="product-card-value price-display">
+                                    {% if product.discount and product.discount > 0 %}
+                                        <span style="text-decoration: line-through; color: #6c757d; font-size: 0.9rem;">{{ product.price|floatformat:3 }} IQD</span><br>
+                                        {{ product.get_discounted_price|floatformat:3 }} IQD
+                                    {% else %}
+                                        {{ product.price|floatformat:3 }} IQD
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="product-card-field">
+                                <div class="product-card-label">Stock</div>
+                                <div class="product-card-value">{{ product.stock }} units</div>
+                            </div>
+                            
+                            <div class="product-card-field">
+                                <div class="product-card-label">Status</div>
+                                <div class="product-card-value">
+                                    {% if product.stock > 10 %}
+                                        <span class="stock-badge stock-in">In Stock</span>
+                                    {% elif product.stock > 0 %}
+                                        <span class="stock-badge stock-low">Low Stock</span>
+                                    {% else %}
+                                        <span class="stock-badge stock-out">Out of Stock</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="product-card-actions">
+                            <a href="{% url 'edit_product' product.id %}" class="btn-edit">
+                                <i class="fas fa-edit"></i>
+                                Edit
+                            </a>
+                            <button class="btn btn-danger btn-sm" onclick="deleteProduct({{ product.id }}, `{{ product.name|escapejs }}`)">
+                                 <i class="fas fa-trash"></i>
+                                 Delete
+                             </button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-box-open"></i>
+                <h3>No Products Found</h3>
+                <p>Start by adding your first product to the inventory.</p>
+                <a href="{% url 'add_product' %}" class="add-product-btn" style="margin-top: 20px;">
+                    <i class="fas fa-plus"></i>
+                    Add Your First Product
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+// Search and Filter Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const stockFilter = document.getElementById('stockFilter');
+    const table = document.getElementById('productsTable');
+    const tableRows = table ? table.getElementsByTagName('tbody')[0].getElementsByTagName('tr') : [];
+    const cardView = document.getElementById('cardView');
+    const productCards = cardView ? cardView.getElementsByClassName('product-card') : [];
+
+    function filterProducts() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedCategory = categoryFilter.value;
+        const selectedStock = stockFilter.value;
+
+        // Filter table rows (desktop/tablet)
+        Array.from(tableRows).forEach(row => {
+            const productName = row.cells[0].textContent.toLowerCase();
+            const category = row.getAttribute('data-category');
+            const stockStatus = row.getAttribute('data-stock');
+            
+            const matchesSearch = productName.includes(searchTerm);
+            const matchesCategory = !selectedCategory || category === selectedCategory;
+            const matchesStock = !selectedStock || stockStatus === selectedStock;
+            
+            if (matchesSearch && matchesCategory && matchesStock) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        // Filter product cards (mobile)
+        Array.from(productCards).forEach(card => {
+            const productName = card.querySelector('.product-name').textContent.toLowerCase();
+            const category = card.getAttribute('data-category');
+            const stockStatus = card.getAttribute('data-stock');
+
+            const matchesSearch = productName.includes(searchTerm);
+            const matchesCategory = !selectedCategory || category === selectedCategory;
+            const matchesStock = !selectedStock || stockStatus === selectedStock;
+
+            if (matchesSearch && matchesCategory && matchesStock) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+    
+    if (searchInput) searchInput.addEventListener('input', filterProducts);
+    if (categoryFilter) categoryFilter.addEventListener('change', filterProducts);
+    if (stockFilter) stockFilter.addEventListener('change', filterProducts);
+});
+
+// Delete Product Function
+function deleteProduct(productId, productName) {
+    if (confirm(`Are you sure you want to delete "${productName}"? This action cannot be undone.`)) {
+        fetch(`/dashboard/delete-product/${productId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error deleting product: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while deleting the product.');
+        });
+    }
+}
+
+// Get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+{% endblock %}

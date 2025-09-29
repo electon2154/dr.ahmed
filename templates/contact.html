@@ -1,0 +1,88 @@
+{%extends 'base.html'%}
+{%load static%}
+
+{%block extra_css%}
+    <style>
+        .fig {
+            background-image: url('{% static "images/contact-fig.png" %}');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            aspect-ratio: 16/22;
+        }
+
+        .form {
+            border-radius: 32px;
+            background: linear-gradient(156deg, rgba(255, 255, 255, 0.51) -0.26%, rgba(221, 221, 221, 0.50) 51.06%);
+            backdrop-filter: blur(6px);
+        }
+
+        .contact {
+            width: 100%;
+            height: 50px;
+            flex-shrink: 0;
+            border-radius: 20px;
+            border: 1px solid #E8E8E8;
+            background: #FFF;
+        }
+
+        .message{
+            border-radius: 20px;
+        }
+
+        .submit{
+            width: 100%;
+            height: 50px;
+            flex-shrink: 0;
+            border-radius: 20px;
+            margin-top: 20px;
+        }
+    </style>
+{%endblock%}
+
+{%block content%}
+    <div class="d-flex flex-column align-items-center">
+        <br>
+    <h1>Contact Us</h1>
+    <br>
+    <p>For press related inquiries, please get in touch via example@domain.com</p>
+    <p>Call us: +964 123456789</p>
+    <p>Visit store: Back To Nature , Al-Ber pharmacy </p>
+    <br class="mb-5">
+    <h1>Have Questions? We Have Answers!</h1>
+    <div class="container form d-flex flex-row">
+        <div class="col-12 col-md-8">
+            <div class="column">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control contact" id="name" placeholder="Enter your name">
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control contact" id="email" placeholder="Enter your email">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea class="form-control message" id="message" rows="5" placeholder="Enter your message"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row d-flex flex-row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary submit">Send Message</button>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="d-none d-md-block col-4 fig">
+        </div>
+    </div>
+{%endblock%}

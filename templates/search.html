@@ -1,0 +1,424 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Search Results - متجر د. أحمد{% endblock %}
+
+{% block content %}
+<div class="search-results-page">
+    <!-- Search Header -->
+    <div class="search-header mb-4">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="search-title">
+                    {% if query %}
+                        Search Results for "{{ query }}"
+                    {% else %}
+                        All Products
+                    {% endif %}
+                </h1>
+                <p class="search-subtitle text-muted">
+                    Found {{ total_results }} product{{ total_results|pluralize }}
+                    {% if category %} in "{{ category }}"{% endif %}
+                </p>
+            </div>
+            <div class="col-md-4">
+                <!-- Category Filter -->
+                <form method="GET" class="category-filter">
+                    {% if query %}<input type="hidden" name="q" value="{{ query }}">{% endif %}
+                    <select name="category" class="form-select" onchange="this.form.submit()">
+                        <option value="">All Categories</option>
+                        {% for cat in categories %}
+                            <option value="{{ cat }}" {% if cat == category %}selected{% endif %}>
+                                {{ cat }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Results -->
+    {% if products %}
+        <div class="products-grid">
+            <div class="row">
+                {% for product in products %}
+                    <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card product-card">
+                        <div class="product-image">
+                            <a href="{% url 'product' product.id %}">
+                                {% if product.image %}
+                                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                                {% else %}
+                                    <img src="{% static 'images/product1.png' %}" alt="{{ product.name }}">
+                                {% endif %}
+                            </a>
+                        </div>
+                        <div class="product-info">
+                            <h5 class="product-title">{{ product.name }}</h5>
+                            <p class="product-category">{{ product.category }}</p>
+                            <p class="product-price">
+                                {% if product.discount and product.discount > 0 %}
+                                    <span class="original-price">{{ product.price|floatformat:3 }} IQD</span>
+                                    <span class="discounted-price">{{ product.get_discounted_price|floatformat:3 }} IQD</span>
+                                {% else %}
+                                    {{ product.price|floatformat:3 }} IQD
+                                {% endif %}
+                            </p>
+                            <button class="btn add-to-cart" onclick="addToCart('{{ product.id }}')" data-product-id="{{ product.id }}">
+                                <i class="fas fa-shopping-bag"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Pagination -->
+        {% if products.has_other_pages %}
+            <nav aria-label="Search results pagination" class="mt-5">
+                <ul class="pagination justify-content-center">
+                    {% if products.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?{% if query %}q={{ query }}&{% endif %}{% if category %}category={{ category }}&{% endif %}page={{ products.previous_page_number }}">
+                                <i class="fas fa-chevron-left"></i> Previous
+                            </a>
+                        </li>
+                    {% endif %}
+                    
+                    {% for num in products.paginator.page_range %}
+                        {% if products.number == num %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ num }}</span>
+                            </li>
+                        {% elif num > products.number|add:'-3' and num < products.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link" href="?{% if query %}q={{ query }}&{% endif %}{% if category %}category={{ category }}&{% endif %}page={{ num }}">{{ num }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if products.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?{% if query %}q={{ query }}&{% endif %}{% if category %}category={{ category }}&{% endif %}page={{ products.next_page_number }}">
+                                Next <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    {% else %}
+        <!-- No Results -->
+        <div class="no-results text-center py-5">
+            <div class="no-results-icon mb-4">
+                <i class="fas fa-search fa-5x text-muted"></i>
+            </div>
+            <h3 class="no-results-title mb-3">No Products Found</h3>
+            <p class="no-results-text text-muted mb-4">
+                {% if query %}
+                    Sorry, we couldn't find any products matching "{{ query }}"
+                    {% if category %}in the "{{ category }}" category{% endif %}.
+                {% else %}
+                    No products are currently available{% if category %} in the "{{ category }}" category{% endif %}.
+                {% endif %}
+            </p>
+            <div class="no-results-actions">
+                <a href="{% url 'catalog' %}" class="btn btn-primary me-3">
+                    <i class="fas fa-th-large"></i> Browse All Products
+                </a>
+                <a href="{% url 'home' %}" class="btn btn-outline-primary">
+                    <i class="fas fa-home"></i> Back to Home
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.search-results-page {
+    padding: 2rem 0;
+}
+
+.search-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+}
+
+.search-subtitle {
+    font-size: 1.1rem;
+}
+
+.category-filter .form-select {
+    border-radius: 25px;
+    border: 2px solid var(--border-color);
+    padding: 0.5rem 1rem;
+}
+
+.category-filter .form-select:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.products-grid {
+    margin-top: 2rem;
+}
+
+.product-card {
+    width: 300px;
+    height: 400px;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.5) !important;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px var(--shadow-light);
+    transition: all 0.3s ease;
+    margin: 10px;
+}
+
+.product-image {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 15px 15px 0 0;
+}
+
+.product-image img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.product-info {
+    position: relative;
+    padding: 10px;
+    border-radius: 15px;
+    margin: 10px;
+    background-color: #F0F0F0;
+}
+
+.add-to-cart {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin-right: 10px;
+    margin-bottom: 40px;
+    background-color: #1F1F1F;
+    color: #fff;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    font-size: 24px;
+    cursor: pointer;
+    vertical-align: middle;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-price {
+    font-weight: bold;
+    margin: 5px 0;
+}
+
+.original-price {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 0.9em;
+    margin-right: 5px;
+}
+
+.discounted-price {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.no-results {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.no-results-icon {
+    opacity: 0.5;
+}
+
+.no-results-title {
+    color: var(--text-dark);
+    font-weight: 600;
+}
+
+.no-results-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.pagination .page-link {
+    border-radius: 25px;
+    margin: 0 2px;
+    border: 2px solid var(--border-color);
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+.pagination .page-link:hover {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .search-title {
+        font-size: 1.5rem;
+    }
+    
+    .product-image {
+        height: 200px;
+    }
+    
+    .product-actions {
+        flex-direction: column;
+    }
+    
+    .product-actions .btn {
+        margin-bottom: 0.5rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Add to Cart functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+    
+    addToCartButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const productId = this.dataset.productId;
+            const productName = this.dataset.productName;
+            const originalText = this.innerHTML;
+            
+            // Show loading state
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+            this.disabled = true;
+            
+            // AJAX request to add to cart
+            fetch('/cart/add/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: JSON.stringify({
+                    product_id: productId,
+                    quantity: 1
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show success state
+                    this.innerHTML = '<i class="fas fa-check"></i> Added!';
+                    this.classList.remove('btn-primary');
+                    this.classList.add('btn-success');
+                    
+                    // Update cart count
+                    const cartCount = document.getElementById('cart-count');
+                    if (cartCount) {
+                        cartCount.textContent = data.cart_count;
+                    }
+                    
+                    // Show notification
+                    showNotification(`${productName} added to cart!`, 'success');
+                    
+                    // Reset button after 2 seconds
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                        this.classList.remove('btn-success');
+                        this.classList.add('btn-primary');
+                        this.disabled = false;
+                    }, 2000);
+                } else {
+                    throw new Error(data.message || 'Failed to add to cart');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                this.innerHTML = originalText;
+                this.disabled = false;
+                showNotification('Failed to add to cart. Please try again.', 'error');
+            });
+        });
+    });
+});
+
+// Notification function
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type === 'error' ? 'danger' : type === 'success' ? 'success' : 'info'} notification-toast`;
+    notification.innerHTML = `
+        <i class="fas fa-${type === 'error' ? 'exclamation-triangle' : type === 'success' ? 'check-circle' : 'info-circle'}"></i>
+        ${message}
+    `;
+    
+    // Add styles
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        min-width: 300px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        animation: slideInRight 0.3s ease;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.style.animation = 'slideOutRight 0.3s ease';
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 300);
+    }, 3000);
+}
+
+// Add CSS animations
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes slideOutRight {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+    }
+`;
+document.head.appendChild(style);
+</script>
+{% endblock %}

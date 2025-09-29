@@ -1,0 +1,334 @@
+{%extends 'base.html'%}
+
+{%load static%}
+{%block extra_css%}
+<style>
+    .catalog-category{
+        position: relative;
+        background-color: #f9f9f9;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        width: 250px;
+        height: 400px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 15px;
+        margin: 10px;
+        cursor: pointer;
+    }
+
+    .catalog-category:hover{
+        /* shine fillter */
+        filter: brightness(1.5);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        transform: scale(1.05);
+        transition: transform 0.3s ease-in-out;
+    }
+
+        .product-card {
+        width: 300px;
+        height: 400px;
+        padding: 10px;
+        background-color: rgba(255, 255, 255, 0.5) !important;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px var(--shadow-light);
+        transition: all 0.3s ease;
+        margin: 10px;
+    }
+
+    .product-image {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        border-radius: 15px 15px 0 0;
+    }
+
+    .product-image img{
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+    
+    .product-info {
+        position: relative;
+        padding: 10px;
+        border-radius: 15px;
+        margin: 10px;
+        background-color: #F0F0F0;
+    }
+
+    .add-to-cart {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        margin-right: 10px;
+        margin-bottom: 40px;
+        background-color: #1F1F1F;
+        color: #fff;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        font-size: 24px;
+        cursor: pointer;
+        vertical-align: middle;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .spacer{
+        height: 2px;
+        background-color: #000;
+        margin: auto;
+    }
+
+    .beauty-category {
+        background-image: url('{% static "images/beauty-category.png" %}');
+    }
+
+    .hair-category {
+        background-image: url('{% static "images/hair-category.png" %}');
+    }
+
+    .skin-category {
+        background-image: url('{% static "images/skin-category.png" %}');
+    }
+
+    .product-price {
+        margin: 10px 0;
+    }
+
+    .original-price {
+        text-decoration: line-through;
+        color: #999;
+        font-size: 14px;
+        margin-right: 5px;
+    }
+
+    .discounted-price {
+        color: #e74c3c;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .discount-badge {
+        background-color: #e74c3c;
+        color: white;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 12px;
+        margin-left: 5px;
+    }
+
+    .price {
+        color: #2c3e50;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .no-products-message {
+        font-size: 18px;
+        color: #666;
+        margin: 50px 0;
+    }
+
+    .add-to-cart.loading {
+        background-color: #95a5a6;
+        pointer-events: none;
+    }
+
+    .add-to-cart.success {
+        background-color: #27ae60;
+    }
+
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #27ae60;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 5px;
+        z-index: 1000;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+    }
+
+    .notification.show {
+        transform: translateX(0);
+    }
+
+    .notification.error {
+        background-color: #e74c3c;
+    }
+</style>
+{%endblock%}
+
+{%block content%}
+    <br>
+
+    <h1 class="text-center">اختر القسم الذي يناسبك</h1>
+
+    <br>
+
+    <div class="row justify-content-around">
+        <a href="{% url 'catalog' %}?category=beauty" class="catalog-category beauty-category" style="text-decoration: none;">
+        </a>
+        <a href="{% url 'catalog' %}?category=hair" class="catalog-category hair-category" style="text-decoration: none;">
+        </a>
+        <a href="{% url 'catalog' %}?category=skin" class="catalog-category skin-category" style="text-decoration: none;">
+        </a>
+    </div>
+
+    <br>
+    <div class="row d-flex flex-row ju">
+        <div class="col-4 spacer"></div>
+        <div class="col-4 text-center">
+            <h1>{% if selected_category %}منتجات {{ selected_category }}{% else %}كل المنتجات{% endif %}</h1>
+            {% if selected_category %}
+                <a href="{% url 'catalog' %}" class="btn btn-outline-primary btn-sm mt-2">عرض جميع المنتجات</a>
+            {% endif %}
+        </div>
+        <div class="col-4 spacer"></div>
+    </div>
+    <br>
+
+    <!-- all products -->
+    <div class="row justify-content-center">
+        {% if all_products %}
+            {% for product in all_products %}
+                <div class="card product-card">
+                    <div class="product-image">
+                        <a href="{% url 'product' product.id %}">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                            {% else %}
+                                <img src="{% static 'images/product1.png' %}" alt="{{ product.name }}">
+                            {% endif %}
+                        </a>
+                    </div>
+                    <div class="product-info">
+                        <h5 class="product-title">{{ product.name }}</h5>
+                        <p class="product-category">{{ product.category }}</p>
+                        <p class="product-price">
+                            {% if product.discount and product.discount > 0 %}
+                                <span class="original-price">{{ product.price|floatformat:3 }} IQD</span>
+                                <span class="discounted-price">{{ product.get_discounted_price|floatformat:3 }} IQD</span>
+                            {% else %}
+                                {{ product.price|floatformat:3 }} IQD
+                            {% endif %}
+                        </p>
+                        <button class="btn add-to-cart" onclick="addToCart('{{ product.id }}')" data-product-id="{{ product.id }}">
+                            <i class="fas fa-shopping-bag"></i>
+                        </button>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12 text-center">
+                <p class="no-products-message">لا توجد منتجات متاحة حالياً</p>
+            </div>
+        {% endif %}
+    </div>
+
+<script>
+    // Get CSRF token from cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    const csrftoken = getCookie('csrftoken');
+
+    // Add to cart function
+    function addToCart(productId) {
+        const button = document.querySelector(`button[data-product-id="${productId}"]`);
+        const originalContent = button.innerHTML;
+        
+        // Show loading state
+        button.classList.add('loading');
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        
+        fetch('/cart/add/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({
+                'product_id': productId,
+                'quantity': 1
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Show success state
+                button.classList.remove('loading');
+                button.classList.add('success');
+                button.innerHTML = '<i class="fas fa-check"></i>';
+                
+                // Update cart counter if it exists
+                const cartCounter = document.querySelector('.cart-counter');
+                if (cartCounter) {
+                    cartCounter.textContent = data.cart_total_items;
+                }
+                
+                // Show success notification
+                showNotification('تم إضافة المنتج إلى السلة بنجاح!', 'success');
+                
+                // Reset button after 2 seconds
+                setTimeout(() => {
+                    button.classList.remove('success');
+                    button.innerHTML = originalContent;
+                }, 2000);
+            } else {
+                // Show error state
+                button.classList.remove('loading');
+                button.innerHTML = originalContent;
+                showNotification('حدث خطأ أثناء إضافة المنتج إلى السلة', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            button.classList.remove('loading');
+            button.innerHTML = originalContent;
+            showNotification('حدث خطأ أثناء إضافة المنتج إلى السلة', 'error');
+        });
+    }
+
+    // Show notification function
+    function showNotification(message, type = 'success') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        // Show notification
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 100);
+        
+        // Hide notification after 3 seconds
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 300);
+        }, 3000);
+    }
+</script>
+{%endblock%}
