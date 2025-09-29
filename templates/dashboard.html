@@ -533,8 +533,9 @@
                                 <td>
                                     <div class="price-display">
                                         {% if product.discount and product.discount > 0 %}
-                                            <span style="text-decoration: line-through; color: #6c757d; font-size: 0.9rem;">{{ product.price|floatformat:3 }} IQD</span><br>
+                                            <span style="text-decoration:line-through;color:#6c757d;font-size:0.9rem">{{ product.price|floatformat:3 }} IQD</span><br>
                                             {{ product.get_discounted_price|floatformat:3 }} IQD
+                                            <small style="color:#28a745;font-weight:bold">(-{{ product.get_discount_percentage|floatformat:0 }}%)</small>
                                         {% else %}
                                             {{ product.price|floatformat:3 }} IQD
                                         {% endif %}

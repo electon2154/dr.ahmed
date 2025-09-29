@@ -260,7 +260,7 @@
                     {% if product.discount and product.discount > 0 %}
                         <span style="text-decoration: line-through; color: #6c757d; font-size: 18px;">{{ product.price|floatformat:3 }} IQD</span><br>
                         <span>{{ product.get_discounted_price|floatformat:3 }} IQD</span>
-                        <small style="color: #28a745; font-size: 14px;">({{ product.discount }}% off)</small>
+                        <small style="color: #28a745; font-size: 14px;">({{ product.get_discount_percentage|floatformat:0 }}% off)</small>
                     {% else %}
                         {{ product.price|default:'20.000'|floatformat:3 }} IQD
                     {% endif %}

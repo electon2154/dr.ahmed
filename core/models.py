@@ -18,9 +18,15 @@ class Product(models.Model):
         return self.name
     
     def get_discounted_price(self):
-        if self.discount:
-            return self.price - self.discount
+        if self.discount and self.discount > 0:
+            # Calculate percentage discount
+            discount_amount = (self.price * self.discount) / 100
+            return self.price - discount_amount
         return self.price
+    
+    def get_discount_percentage(self):
+        """Return the discount as a percentage for display purposes"""
+        return self.discount if self.discount else 0
 
 
 class Cart(models.Model):

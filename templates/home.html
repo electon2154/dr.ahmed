@@ -215,6 +215,38 @@
       text-align: right;
     }
 
+    .product-price {
+        margin: 10px 0;
+    }
+
+    .original-price {
+        text-decoration: line-through;
+        color: #999;
+        font-size: 14px;
+        margin-right: 5px;
+    }
+
+    .discounted-price {
+        color: #e74c3c;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .discount-badge {
+        background-color: #e74c3c;
+        color: white;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 12px;
+        margin-left: 5px;
+    }
+
+    .price {
+        color: #2c3e50;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
     @media screen and (max-width: 430px) {
       .title {
         font-size: calc(1.0rem + 1.5vw);
@@ -240,7 +272,7 @@
       <div class="pargraph col-8 d-flex flex-column justify-content-center align-items-end">
         <h1 class="p-2">Back To Nature</h1>
         <p class="p-2">منتجات طبيعية مصنعة بيد البروفيسور د.احمد هاشم الرفاعي, استاذ الصيدلة الصناعية, تركيبات دقيقة خالية من الاضافات الضارة, صممت لتعيد لبشرتك توازنها ونضارتها.</p>
-        <a class="btn btn-primary text-white d-flex flex-row align-items-center" href="#">
+        <a class="btn btn-primary text-white d-flex flex-row align-items-center" href="{%url 'catalog'%}">
           <i class="fas fa-arrow-left p-2 text-white"></i>
           جربي الفرق الان
         </a>
@@ -280,6 +312,7 @@
                             {% if product.discount and product.discount > 0 %}
                                 <span class="original-price">{{ product.price|floatformat:3 }} IQD</span>
                                 <span class="discounted-price">{{ product.get_discounted_price|floatformat:3 }} IQD</span>
+                                <span class="discount-badge">-{{ product.get_discount_percentage|floatformat:0 }}%</span>
                             {% else %}
                                 {{ product.price|floatformat:3 }} IQD
                             {% endif %}
@@ -301,7 +334,7 @@
     <br>
 
     <div class="text-center">
-        <button class="btn btn-primary">مشاهدة المزيد</button>
+        <a href="{%url 'catalog'%}" class="btn btn-primary">مشاهدة المزيد</a>
     </div>
 
     <br>

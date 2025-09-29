@@ -216,6 +216,7 @@
                             {% if product.discount and product.discount > 0 %}
                                 <span class="original-price">{{ product.price|floatformat:3 }} IQD</span>
                                 <span class="discounted-price">{{ product.get_discounted_price|floatformat:3 }} IQD</span>
+                                <span class="discount-badge">-{{ product.get_discount_percentage|floatformat:0 }}%</span>
                             {% else %}
                                 {{ product.price|floatformat:3 }} IQD
                             {% endif %}

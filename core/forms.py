@@ -35,9 +35,10 @@ class ProductForm(forms.ModelForm):
             }),
             'discount': forms.NumberInput(attrs={
                 'class': 'form-input',
-                'placeholder': '0.00',
-                'step': '0.01',
-                'min': '0'
+                'placeholder': '0',
+                'step': '1',
+                'min': '0',
+                'max': '100'
             }),
             'description': forms.Textarea(attrs={
                 'class': 'form-input form-textarea',
@@ -59,14 +60,14 @@ class ProductForm(forms.ModelForm):
             'category': 'Category',
             'price': 'Price (IQD)',
             'stock': 'Stock Quantity',
-            'discount': 'Discount (IQD)',
+            'discount': 'Discount (%)',
             'description': 'Description',
             'image': 'Product Image',
             'is_available': 'Available for Sale'
         }
         
         help_texts = {
-            'discount': 'Optional: Enter discount amount in IQD',
+            'discount': 'Optional: Enter discount percentage (0-100%)',
             'image': 'Supported formats: JPG, PNG, GIF (Max: 5MB)',
             'is_available': 'Check if this product should be available for customers to purchase'
         }
@@ -98,8 +99,11 @@ class ProductForm(forms.ModelForm):
     
     def clean_discount(self):
         discount = self.cleaned_data.get('discount')
-        if discount is not None and discount < 0:
-            raise forms.ValidationError('Discount cannot be negative.')
+        if discount is not None:
+            if discount < 0:
+                raise forms.ValidationError('Discount cannot be negative.')
+            if discount > 100:
+                raise forms.ValidationError('Discount percentage cannot exceed 100%.')
         return discount
     
     def clean_name(self):
@@ -127,13 +131,15 @@ class ProductForm(forms.ModelForm):
     def clean_image(self):
         image = self.cleaned_data.get('image')
         if image:
-            # Check file size (5MB limit)
-            if image.size > 5 * 1024 * 1024:  # 5MB in bytes
-                raise forms.ValidationError('Image file size cannot exceed 5MB.')
-            
-            # Check file type
-            allowed_types = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif']
-            if image.content_type not in allowed_types:
-                raise forms.ValidationError('Only JPEG, PNG, and GIF images are allowed.')
+            # Only validate new uploads, not existing files
+            if hasattr(image, 'content_type'):
+                # Check file size (5MB limit)
+                if image.size > 5 * 1024 * 1024:  # 5MB in bytes
+                    raise forms.ValidationError('Image file size cannot exceed 5MB.')
+                
+                # Check file type
+                allowed_types = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif']
+                if image.content_type not in allowed_types:
+                    raise forms.ValidationError('Only JPEG, PNG, and GIF images are allowed.')
         
         return image
