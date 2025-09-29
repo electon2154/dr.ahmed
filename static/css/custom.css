@@ -333,6 +333,12 @@ body {
     }
 }
 
+@media (max-width: 390px) {
+    .slider-text {
+        font-size: 10px;
+    }
+}
+
 /* Animation Classes */
 .fade-in {
     opacity: 0;
