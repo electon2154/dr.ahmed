@@ -19,16 +19,15 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 from core.views import (
-    home, catalog, contact, about, product, cart, search,
+    home, contact, about, product, cart, search,
     add_to_cart, remove_from_cart, update_cart_quantity, get_cart_info,
     dashboard, add_product, edit_product, delete_product, toggle_product_availability,
-    update_product_partial
+    update_product_partial, submit_review, submit_site_review
 )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home, name='home'),
-    path('catalog/', catalog, name='catalog'),
     path('search/', search, name='search'),
     path('about/', about, name='about'),
     path('contact/', contact, name='contact'),
@@ -40,6 +39,9 @@ urlpatterns = [
     path('cart/remove/', remove_from_cart, name='remove_from_cart'),
     path('cart/update/', update_cart_quantity, name='update_cart_quantity'),
     path('cart/info/', get_cart_info, name='get_cart_info'),
+    # Review endpoints
+    path('review/submit/', submit_review, name='submit_review'),
+    path('site-review/submit/', submit_site_review, name='submit_site_review'),
     # Dashboard endpoints
     path('dashboard/', dashboard, name='dashboard'),
     path('dashboard/add-product/', add_product, name='add_product'),

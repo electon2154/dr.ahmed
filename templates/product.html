@@ -97,6 +97,371 @@
         gap: 15px;
     }
     
+    /* Review Section Styles */
+    .reviews-section {
+        margin-top: 40px;
+        padding: 30px;
+        background: #f8f9fa;
+        border-radius: 15px;
+        border: 1px solid #e9ecef;
+    }
+    
+    .reviews-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #dee2e6;
+    }
+    
+    .reviews-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0;
+    }
+    
+    .rating-summary {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .avg-rating {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .rating-number {
+        font-size: 20px;
+        font-weight: 700;
+        color: #e74c3c;
+    }
+    
+    .stars {
+        display: flex;
+        gap: 2px;
+    }
+    
+    .stars i {
+        color: #e0e0e0;
+        font-size: 16px;
+        transition: color 0.2s;
+    }
+    
+    .stars i.filled {
+        color: #F15A23;
+    }
+    
+    .review-count, .purchase-count {
+        font-size: 14px;
+        color: #6c757d;
+        background: #fff;
+        padding: 5px 12px;
+        border-radius: 20px;
+        border: 1px solid #dee2e6;
+    }
+    
+    .review-form {
+         background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+         padding: 35px;
+         border-radius: 20px;
+         border: 2px solid #e3f2fd;
+         margin-bottom: 30px;
+         box-shadow: 0 8px 25px rgba(0, 123, 255, 0.08);
+         position: relative;
+         overflow: hidden;
+     }
+     
+     .review-form::before {
+         content: '';
+         position: absolute;
+         top: 0;
+         left: 0;
+         right: 0;
+         height: 4px;
+         background: #e74c3c;
+     }
+     
+     .review-form h3 {
+         color: #2c3e50;
+         font-size: 22px;
+         font-weight: 700;
+         margin-bottom: 25px;
+         text-align: center;
+         position: relative;
+     }
+     
+     .review-form h3::after {
+         content: '';
+         position: absolute;
+         bottom: -8px;
+         left: 50%;
+         transform: translateX(-50%);
+         width: 60px;
+         height: 3px;
+         background: #e74c3c;
+         border-radius: 2px;
+     }
+     
+     .form-group {
+         margin-bottom: 25px;
+         position: relative;
+     }
+     
+     .form-group label {
+         display: block;
+         margin-bottom: 10px;
+         font-weight: 600;
+         color: #2c3e50;
+         font-size: 15px;
+         position: relative;
+         padding-left: 20px;
+     }
+     
+     
+     .form-group:nth-child(1) label::before {
+         content: '\f007';
+     }
+     
+     .form-group:nth-child(3) label::before {
+         content: '\f075';
+     }
+     
+     .form-control {
+         width: 100%;
+         padding: 15px 20px;
+         border: 2px solid #e3f2fd;
+         border-radius: 12px;
+         font-size: 15px;
+         transition: all 0.3s ease;
+         background: #ffffff;
+         box-shadow: 0 2px 8px rgba(0, 123, 255, 0.05);
+     }
+     
+     .form-control:focus {
+         outline: none;
+         border-color: #e74c3c;
+         box-shadow: 0 0 0 4px rgba(255, 89, 0, 0.1), 0 4px 12px rgba(255, 60, 0, 0.15);
+         transform: translateY(-1px);
+     }
+     
+     .form-control::placeholder {
+         color: #6c757d;
+         font-style: italic;
+     }
+     
+     .rating-group {
+         background: #f8f9fa;
+         padding: 20px;
+         border-radius: 15px;
+         border: 2px dashed #dee2e6;
+         text-align: center;
+         margin-top: 10px;
+     }
+     
+     .rating-input {
+         display: flex;
+         justify-content: center;
+         gap: 8px;
+         margin-top: 15px;
+     }
+     
+     .rating-input input[type="radio"] {
+         display: none;
+     }
+     
+     .rating-input label {
+         cursor: pointer;
+         font-size: 28px;
+         color: #e0e0e0;
+         transition: all 0.3s ease;
+         margin: 0;
+         padding: 8px;
+         border-radius: 50%;
+         position: relative;
+     }
+     
+     .rating-input label:hover {
+         color: #F15A23;
+         transform: scale(1.2);
+         text-shadow: 0 0 10px rgba(241, 90, 35, 0.5);
+     }
+     
+     .rating-input input[type="radio"]:checked + label {
+         color: #F15A23;
+         transform: scale(1.1);
+         text-shadow: 0 0 15px rgba(241, 90, 35, 0.7);
+     }
+     
+     .rating-input label::after {
+         content: attr(data-rating);
+         position: absolute;
+         bottom: -25px;
+         left: 50%;
+         transform: translateX(-50%);
+         font-size: 12px;
+         color: #6c757d;
+         font-weight: 600;
+         opacity: 0;
+         transition: opacity 0.3s;
+     }
+     
+     .rating-input label:hover::after {
+         opacity: 1;
+     }
+     
+     .submit-review-btn {
+         background: linear-gradient(135deg, #ff5900 0%, #ff5900 100%);
+         color: white;
+         border: none;
+         padding: 15px 40px;
+         border-radius: 30px;
+         font-size: 16px;
+         font-weight: 700;
+         cursor: pointer;
+         transition: all 0.3s ease;
+         box-shadow: 0 6px 20px rgba(255, 94, 0, 0.3);
+         position: relative;
+         overflow: hidden;
+         text-transform: uppercase;
+         letter-spacing: 1px;
+         width: 100%;
+         margin-top: 10px;
+     }
+     
+     .submit-review-btn::before {
+         content: '';
+         position: absolute;
+         top: 0;
+         left: -100%;
+         width: 100%;
+         height: 100%;
+         background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+         transition: left 0.5s;
+     }
+     
+     .submit-review-btn:hover {
+         transform: translateY(-3px);
+         box-shadow: 0 8px 25px rgba(255, 64, 0, 0.4);
+     }
+     
+     .submit-review-btn:hover::before {
+         left: 100%;
+     }
+     
+     .submit-review-btn:active {
+         transform: translateY(-1px);
+         box-shadow: 0 4px 15px rgba(255, 85, 0, 0.3);
+     }
+     
+     @media (max-width: 768px) {
+         .review-form {
+             padding: 25px 20px;
+         }
+         
+         .rating-input label {
+             font-size: 24px;
+             padding: 6px;
+         }
+         
+         .submit-review-btn {
+             padding: 12px 30px;
+             font-size: 14px;
+         }
+     }
+    
+    .reviews-list {
+        background: #fff;
+        border-radius: 12px;
+        border: 1px solid #dee2e6;
+        overflow: hidden;
+    }
+    
+    .review-item {
+        padding: 20px;
+        border-bottom: 1px solid #f1f3f4;
+    }
+    
+    .review-item:last-child {
+        border-bottom: none;
+    }
+    
+    .review-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 12px;
+    }
+    
+    .reviewer-info {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .reviewer-name {
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 16px;
+    }
+    
+    .review-rating {
+        display: flex;
+        gap: 2px;
+    }
+    
+    .review-rating i {
+        color: #e0e0e0;
+        font-size: 14px;
+    }
+    
+    .review-rating i.filled {
+        color: #F15A23;
+    }
+    
+    .review-date {
+        font-size: 12px;
+        color: #6c757d;
+        background: #f8f9fa;
+        padding: 4px 8px;
+        border-radius: 12px;
+    }
+    
+    .review-comment {
+        color: #495057;
+        line-height: 1.6;
+        margin: 0;
+        font-size: 14px;
+    }
+    
+    .no-reviews {
+        text-align: center;
+        padding: 40px 20px;
+        color: #6c757d;
+        font-style: italic;
+    }
+    
+    @media (max-width: 768px) {
+        .reviews-header {
+            flex-direction: column;
+            gap: 15px;
+            align-items: flex-start;
+        }
+        
+        .rating-summary {
+            flex-wrap: wrap;
+        }
+        
+        .review-header {
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-start;
+        }
+    }
+
     .quantity-btn {
         width: 40px;
         height: 40px;
@@ -304,8 +669,98 @@
             </div>
         </div>
     </div>
+    
+    <!-- Reviews Section -->
+    <div class="reviews-section">
+        <div class="reviews-header">
+            <h3>Customer Reviews</h3>
+            <div class="rating-summary">
+                <div class="avg-rating">
+                    <span class="rating-number">{{ avg_rating|default:0 }}</span>
+                    <div class="stars">
+                        {% for i in "12345" %}
+                            <i class="fas fa-star {% if forloop.counter <= avg_rating %}filled{% endif %}"></i>
+                        {% endfor %}
+                    </div>
+                    <span class="review-count">({{ review_count }} reviews)</span>
+                </div>
+                <div class="purchase-count">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>{{ purchase_count }} purchases</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Review Form -->
+        <div class="review-form">
+            <h3>✨ اكتب تقييماً ✨</h3>
+            <form id="reviewForm">
+                <div class="form-group">
+                    <label for="reviewerName">اسمك:</label>
+                    <input type="text" id="reviewerName" name="reviewer_name" class="form-control" placeholder="أدخل اسمك..." required>
+                </div>
+                
+                <div class="form-group">
+                    <label>التقييم:</label>
+                    <div class="rating-group">
+                        <p style="margin: 0 0 10px 0; color: #6c757d; font-size: 14px;">انقر على نجمة لتقييم هذا المنتج</p>
+                        <div class="rating-input">
+                            <input type="radio" name="rating" value="5" id="star5">
+                            <label for="star5" data-rating="ممتاز"><i class="fas fa-star"></i></label>
+                            <input type="radio" name="rating" value="4" id="star4">
+                            <label for="star4" data-rating="جيد جداً"><i class="fas fa-star"></i></label>
+                            <input type="radio" name="rating" value="3" id="star3">
+                            <label for="star3" data-rating="جيد"><i class="fas fa-star"></i></label>
+                            <input type="radio" name="rating" value="2" id="star2">
+                            <label for="star2" data-rating="مقبول"><i class="fas fa-star"></i></label>
+                            <input type="radio" name="rating" value="1" id="star1">
+                            <label for="star1" data-rating="ضعيف"><i class="fas fa-star"></i></label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="comment">تقييمك:</label>
+                    <textarea id="comment" name="comment" class="form-control" rows="4" placeholder="شاركنا تجربتك مع هذا المنتج..." required></textarea>
+                </div>
+                
+                <button type="submit" class="submit-review-btn">
+                    <i class="fas fa-paper-plane"></i>
+                    إرسال التقييم
+                </button>
+            </form>
+        </div>
+        
+        <!-- Reviews List -->
+        <div class="reviews-list">
+            {% for review in reviews %}
+                <div class="review-item">
+                    <div class="review-header">
+                        <div class="reviewer-info">
+                            <span class="reviewer-name">{{ review.reviewer_name }}</span>
+                            <div class="review-rating">
+                                {% for i in "12345" %}
+                                    <i class="fas fa-star {% if forloop.counter <= review.rating %}filled{% endif %}"></i>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <span class="review-date">{{ review.created_at|date:"F d, Y" }}</span>
+                    </div>
+                    <p class="review-comment">{{ review.comment }}</p>
+                </div>
+            {% empty %}
+                <div class="no-reviews">
+                    <i class="fas fa-comment-slash"></i>
+                    <p>لا توجد تقييمات بعد. كن أول من يقيم هذا المنتج!</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 </div>
 
+{% endblock %}
+
+{% block extra_js %}
 <script>
 // Get CSRF token
 function getCookie(name) {
@@ -376,10 +831,9 @@ function addToCart() {
                 addButton.style.background = 'linear-gradient(135deg, #F15A23 0%, #e74c3c 100%)';
             }, 2000);
             
-            // Update cart count if there's a cart counter in the navigation
-            const cartCounter = document.querySelector('.cart-count');
-            if (cartCounter) {
-                cartCounter.textContent = data.cart_count;
+            // Update cart count using the global function
+            if (typeof window.updateCartCount === 'function') {
+                window.updateCartCount(data.cart_total_items);
             }
         } else {
             alert('خطأ: ' + data.message);
@@ -417,5 +871,150 @@ function shareProduct() {
         });
     }
 }
+
+// Review form functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const reviewForm = document.getElementById('reviewForm');
+    if (!reviewForm) return;
+    
+    const ratingInputs = document.querySelectorAll('input[name="rating"]');
+    const ratingLabels = document.querySelectorAll('.rating-input label');
+    
+    // Handle star rating visual feedback
+    ratingLabels.forEach(function(label, index) {
+        label.addEventListener('mouseover', function() {
+            highlightStars(5 - index);
+        });
+        
+        label.addEventListener('click', function() {
+            const ratingValue = 5 - index;
+            ratingInputs[index].checked = true;
+            highlightStars(ratingValue);
+        });
+    });
+    
+    function highlightStars(rating) {
+        ratingLabels.forEach(function(label, index) {
+            const star = label.querySelector('i');
+            if (5 - index <= rating) {
+                star.style.color = '#F15A23';
+            } else {
+                star.style.color = '#e0e0e0';
+            }
+        });
+    }
+    
+    // Handle form submission
+    reviewForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const selectedRating = document.querySelector('input[name="rating"]:checked');
+        const reviewerName = document.getElementById('reviewerName').value || 'Anonymous';
+        const comment = document.getElementById('comment').value.trim();
+        
+        // Validate form
+        if (!selectedRating) {
+            alert('Please select a rating.');
+            return;
+        }
+        
+        if (!comment) {
+            alert('Please write a comment.');
+            return;
+        }
+        
+        // Submit review
+         var requestData = {};
+         requestData['product_id'] = '{{ product.id|default:1 }}';
+         requestData['reviewer_name'] = reviewerName;
+         requestData['rating'] = selectedRating.value;
+         requestData['comment'] = comment;
+         
+         fetch('/review/submit/', {
+             method: 'POST',
+             headers: {
+                 'Content-Type': 'application/json',
+                 'X-CSRFToken': csrftoken
+             },
+             body: JSON.stringify(requestData)
+         })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            if (data.success) {
+                // Reset form
+                reviewForm.reset();
+                ratingLabels.forEach(function(label) {
+                    label.querySelector('i').style.color = '#e0e0e0';
+                });
+                
+                // Add new review to the list
+                addReviewToList(data.review);
+                
+                // Update rating summary
+                updateRatingSummary(data.avg_rating, data.review_count);
+                
+                alert('تم إرسال التقييم بنجاح!');
+            } else {
+                alert('خطأ: ' + data.message);
+            }
+        })
+        .catch(function(error) {
+            console.error('Error:', error);
+            alert('حدث خطأ أثناء إرسال التقييم.');
+        });
+    });
+    
+    function addReviewToList(review) {
+        const reviewsList = document.querySelector('.reviews-list');
+        const noReviews = reviewsList.querySelector('.no-reviews');
+        
+        if (noReviews) {
+            noReviews.remove();
+        }
+        
+        const reviewHTML = '<div class="review-item">' +
+            '<div class="review-header">' +
+                '<div class="reviewer-info">' +
+                    '<span class="reviewer-name">' + review.reviewer_name + '</span>' +
+                    '<div class="review-rating">' +
+                        generateStars(review.rating) +
+                    '</div>' +
+                '</div>' +
+                '<span class="review-date">' + review.created_at + '</span>' +
+            '</div>' +
+            '<p class="review-comment">' + review.comment + '</p>' +
+        '</div>';
+        
+        reviewsList.insertAdjacentHTML('afterbegin', reviewHTML);
+    }
+    
+    function generateStars(rating) {
+        var starsHTML = '';
+        for (var i = 1; i <= 5; i++) {
+            var filled = i <= rating ? 'filled' : '';
+            starsHTML += '<i class="fas fa-star ' + filled + '"></i>';
+        }
+        return starsHTML;
+    }
+    
+    function updateRatingSummary(avgRating, reviewCount) {
+        const ratingNumber = document.querySelector('.rating-number');
+        const reviewCountEl = document.querySelector('.review-count');
+        
+        if (ratingNumber) ratingNumber.textContent = avgRating;
+        if (reviewCountEl) reviewCountEl.textContent = '(' + reviewCount + ' reviews)';
+        
+        const summaryStars = document.querySelectorAll('.avg-rating .stars i');
+        summaryStars.forEach(function(star, index) {
+            if (index < Math.floor(avgRating)) {
+                star.classList.add('filled');
+            } else {
+                star.classList.remove('filled');
+            }
+        });
+    }
+});
 </script>
 {% endblock %}

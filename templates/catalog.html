@@ -234,6 +234,9 @@
         {% endif %}
     </div>
 
+{% endblock %}
+
+{% block extra_js %}
 <script>
     // Get CSRF token from cookies
     function getCookie(name) {
@@ -281,10 +284,9 @@
                 button.classList.add('success');
                 button.innerHTML = '<i class="fas fa-check"></i>';
                 
-                // Update cart counter if it exists
-                const cartCounter = document.querySelector('.cart-counter');
-                if (cartCounter) {
-                    cartCounter.textContent = data.cart_total_items;
+                // Update cart count using the global function
+                if (typeof window.updateCartCount === 'function') {
+                    window.updateCartCount(data.cart_total_items);
                 }
                 
                 // Show success notification
@@ -332,4 +334,4 @@
         }, 3000);
     }
 </script>
-{%endblock%}
+{% endblock %}

@@ -242,6 +242,94 @@
         color: white;
     }
     
+    /* Customer Information Form Styles */
+    .customer-info-section {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+    
+    .section-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .section-title i {
+        color: #F15A23;
+    }
+    
+    .customer-form {
+        width: 100%;
+    }
+    
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .form-label i {
+        color: #F15A23;
+        width: 16px;
+    }
+    
+    .form-input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #dee2e6;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+    }
+    
+    .form-input:focus {
+        outline: none;
+        border-color: #F15A23;
+        box-shadow: 0 0 0 3px rgba(241, 90, 35, 0.1);
+    }
+    
+    .form-textarea {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #dee2e6;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+        resize: vertical;
+        font-family: inherit;
+    }
+    
+    .form-textarea:focus {
+        outline: none;
+        border-color: #F15A23;
+        box-shadow: 0 0 0 3px rgba(241, 90, 35, 0.1);
+    }
+    
     @media (max-width: 768px) {
         .cart-item {
             flex-direction: column;
@@ -263,6 +351,19 @@
         .checkout-btn {
             width: 100%;
         }
+        
+        .form-row {
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+        
+        .customer-info-section {
+            padding: 20px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+        }
     }
 </style>
 {% endblock %}
@@ -270,7 +371,7 @@
 {% block content %}
 <div class="cart-container">
     <div class="cart-header">
-        <a href="{% url 'catalog' %}" class="back-btn">
+        <a href="{% url 'home' %}" class="back-btn">
             <i class="fas fa-chevron-left"></i>
         </a>
         <h1 class="cart-title">Shopping cart</h1>
@@ -296,12 +397,12 @@
                     </div>
                     <div class="item-controls">
                         <div class="quantity-controls">
-                            <button class="qty-btn" onclick="decreaseQuantity({{ item.product.id }})">-</button>
+                            <button class="qty-btn" onclick="decreaseQuantity('{{ item.product.id }}')">-</button>
                             <span class="qty-display" id="qty-{{ item.product.id }}">{{ item.quantity }}</span>
-                            <button class="qty-btn" onclick="increaseQuantity({{ item.product.id }})">+</button>
+                            <button class="qty-btn" onclick="increaseQuantity('{{ item.product.id }}')">+</button>
                         </div>
-                        <div class="item-price">{{ item.total_price|floatformat:3 }} IQD</div>
-                        <button class="delete-btn" onclick="removeItem({{ item.product.id }})">
+                        <div class="item-price">{{ item.price|floatformat:3 }} IQD</div>
+                        <button class="delete-btn" onclick="removeItem('{{ item.product.id }}')">
                             <i class="fas fa-trash"></i>
                             Delete
                         </button>
@@ -315,12 +416,54 @@
                     <i class="fas fa-shopping-cart"></i>
                 </div>
                 <div class="empty-cart-text">Your cart is empty</div>
-                <a href="{% url 'catalog' %}" class="continue-shopping">Continue Shopping</a>
+                <a href="{% url 'home' %}" class="continue-shopping">Continue Shopping</a>
             </div>
         {% endif %}
     </div>
     
     {% if cart_items %}
+    <!-- Customer Information Form -->
+    <div class="customer-info-section">
+        <h2 class="section-title">
+            <i class="fas fa-user"></i>
+            Customer Information
+        </h2>
+        <div class="customer-form">
+            <form id="customerForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fullName" class="form-label">
+                            <i class="fas fa-user"></i>
+                            Full Name *
+                        </label>
+                        <input type="text" id="fullName" name="fullName" class="form-input" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phoneNumber" class="form-label">
+                            <i class="fas fa-phone"></i>
+                            Phone Number *
+                        </label>
+                        <input type="tel" id="phoneNumber" name="phoneNumber" class="form-input" placeholder="Enter your phone number" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="address" class="form-label">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Address *
+                    </label>
+                    <textarea id="address" name="address" class="form-textarea" placeholder="Enter your delivery address" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="notes" class="form-label">
+                        <i class="fas fa-sticky-note"></i>
+                        Notes (Optional)
+                    </label>
+                    <textarea id="notes" name="notes" class="form-textarea" placeholder="Any special instructions or notes" rows="2"></textarea>
+                </div>
+            </form>
+        </div>
+    </div>
+    
     <div class="cart-summary">
         <div class="subtotal">Subtotal <span id="total-amount">{{ total_price|floatformat:3 }} IQD</span></div>
         <button class="checkout-btn" onclick="proceedToCheckout()">Checkout</button>
@@ -435,11 +578,55 @@ function updateCartDisplay(data) {
     if (totalElement) {
         totalElement.textContent = parseFloat(data.cart_total_price).toFixed(3) + ' IQD';
     }
+    
+    // Update cart count in header
+    if (typeof window.updateCartCount === 'function') {
+        window.updateCartCount(data.cart_total_items);
+    }
 }
 
 function proceedToCheckout() {
-    alert('Proceeding to checkout...');
-    // Add checkout logic here
+    // Validate customer information
+    const fullName = document.getElementById('fullName').value.trim();
+    const phoneNumber = document.getElementById('phoneNumber').value.trim();
+    const address = document.getElementById('address').value.trim();
+    const notes = document.getElementById('notes').value.trim();
+    
+    // Check required fields
+    if (!fullName) {
+        alert('Please enter your full name.');
+        document.getElementById('fullName').focus();
+        return;
+    }
+    
+    if (!phoneNumber) {
+        alert('Please enter your phone number.');
+        document.getElementById('phoneNumber').focus();
+        return;
+    }
+    
+    if (!address) {
+        alert('Please enter your delivery address.');
+        document.getElementById('address').focus();
+        return;
+    }
+    
+    // Collect customer data
+    const customerData = {
+        fullName: fullName,
+        phoneNumber: phoneNumber,
+        address: address,
+        notes: notes
+    };
+    
+    // Store customer data (you can modify this to send to server)
+    console.log('Customer Information:', customerData);
+    
+    // Show confirmation
+    alert(`Thank you ${fullName}! Your order will be processed and delivered to: ${address}`);
+    
+    // Add actual checkout logic here
+    // For example: redirect to payment page or submit order
 }
 </script>
 {% endblock %}

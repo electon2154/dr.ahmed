@@ -328,13 +328,15 @@
                         <i class="fas fa-list"></i>
                         Category *
                     </label>
-                    <input type="text" 
-                           name="category" 
-                           id="id_category" 
-                           class="form-input" 
-                           value="{{ form.category.value|default:'' }}"
-                           placeholder="e.g., Skincare, Moisturizer"
-                           required>
+                    <select name="category" 
+                            id="id_category" 
+                            class="form-select" 
+                            required>
+                        <option value="">Select a category</option>
+                        <option value="Skin" {% if form.category.value == 'Skin' %}selected{% endif %}>Skin</option>
+                        <option value="Hair" {% if form.category.value == 'Hair' %}selected{% endif %}>Hair</option>
+                        <option value="Beauty" {% if form.category.value == 'Beauty' %}selected{% endif %}>Beauty</option>
+                    </select>
                     {% if form.category.errors %}
                         {% for error in form.category.errors %}
                             <span class="error-message">{{ error }}</span>

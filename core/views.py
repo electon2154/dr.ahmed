@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q
-from .models import Product
+from .models import Product, Review, PurchaseHistory, SiteReview, VisitorCounter
 from .cart import CartManager
 from .forms import ProductForm
 import json
@@ -55,16 +55,43 @@ def search(request):
 # Create your views here.
 
 def home(request):
-    # Get the 6 most recent products
-    recent_products = Product.objects.filter(is_available=True).order_by('-created_at')[:6]
+    # Track visitor
+    def get_client_ip(request):
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        return ip
     
-    context = {
-        'current_page': 'home',
-        'recent_products': recent_products
-    }
-    return render(request, 'home.html', context)
-
-def catalog(request):
+    # Record visitor if not already recorded today
+    client_ip = get_client_ip(request)
+    user_agent = request.META.get('HTTP_USER_AGENT', '')
+    
+    # Check if this IP visited today
+    from django.utils import timezone
+    today = timezone.now().date()
+    if not VisitorCounter.objects.filter(ip_address=client_ip, visit_date__date=today).exists():
+        VisitorCounter.objects.create(
+            ip_address=client_ip,
+            user_agent=user_agent,
+            page_visited='/'
+        )
+    
+    # Get visitor statistics
+    total_visitors = VisitorCounter.get_total_visitors()
+    today_visitors = VisitorCounter.get_today_visitors()
+    
+    # Get site reviews
+    site_reviews = SiteReview.objects.filter(is_approved=True)[:5]  # Latest 5 reviews
+    
+    # Calculate average site rating
+    site_avg_rating = 0
+    site_review_count = SiteReview.objects.filter(is_approved=True).count()
+    if site_review_count > 0:
+        total_rating = sum(review.rating for review in SiteReview.objects.filter(is_approved=True))
+        site_avg_rating = round(total_rating / site_review_count, 1)
+    
     # Get category filter from URL parameters
     category_filter = request.GET.get('category', '')
     
@@ -82,12 +109,19 @@ def catalog(request):
     categories = Product.objects.filter(is_available=True).values_list('category', flat=True).distinct().order_by('category')
     
     context = {
-        'current_page': 'catalog',
+        'current_page': 'home',
         'all_products': all_products,
         'categories': categories,
-        'selected_category': category_filter
+        'selected_category': category_filter,
+        'total_visitors': total_visitors,
+        'today_visitors': today_visitors,
+        'site_reviews': site_reviews,
+        'site_avg_rating': site_avg_rating,
+        'site_review_count': site_review_count
     }
-    return render(request, 'catalog.html', context)
+    return render(request, 'home.html', context)
+
+
 
 def contact(request):
     context = {'current_page': 'contact'}
@@ -101,15 +135,34 @@ def product(request, product_id=None):
     if product_id:
         try:
             product_obj = get_object_or_404(Product, id=product_id)
+            # Get reviews for this product
+            reviews = Review.objects.filter(product=product_obj)
+            # Get purchase count
+            purchase_count = PurchaseHistory.objects.filter(product=product_obj).count()
+            # Calculate average rating
+            avg_rating = 0
+            if reviews.exists():
+                total_rating = sum(review.rating for review in reviews)
+                avg_rating = round(total_rating / reviews.count(), 1)
         except:
             # If product not found, create a default product for demo
             product_obj = None
+            reviews = []
+            purchase_count = 0
+            avg_rating = 0
     else:
         product_obj = None
+        reviews = []
+        purchase_count = 0
+        avg_rating = 0
     
     context = {
         'current_page': 'product',
-        'product': product_obj
+        'product': product_obj,
+        'reviews': reviews,
+        'purchase_count': purchase_count,
+        'avg_rating': avg_rating,
+        'review_count': len(reviews)
     }
     return render(request, 'product.html', context)
 
@@ -140,6 +193,14 @@ def add_to_cart(request):
         product = get_object_or_404(Product, id=product_id)
         cart = CartManager(request)
         cart.add(product, quantity)
+        
+        # Track purchase in history
+        PurchaseHistory.objects.create(
+            product=product,
+            quantity=quantity,
+            session_key=request.session.session_key,
+            user=request.user if request.user.is_authenticated else None
+        )
         
         return JsonResponse({
             'success': True,
@@ -407,6 +468,68 @@ def update_product_partial(request, product_id):
         }, status=400)
 
 
+@require_POST
+@csrf_exempt
+def submit_review(request):
+    """AJAX endpoint to submit a product review"""
+    try:
+        data = json.loads(request.body)
+        product_id = data.get('product_id')
+        rating = int(data.get('rating'))
+        comment = data.get('comment', '').strip()
+        reviewer_name = data.get('reviewer_name', 'Anonymous').strip()
+        
+        # Validate input
+        if not product_id or not rating or rating < 1 or rating > 5:
+            return JsonResponse({
+                'success': False,
+                'message': 'Invalid product ID or rating.'
+            }, status=400)
+            
+        if not comment:
+            return JsonResponse({
+                'success': False,
+                'message': 'Comment is required.'
+            }, status=400)
+        
+        product = get_object_or_404(Product, id=product_id)
+        
+        # Create the review
+        review = Review.objects.create(
+            product=product,
+            reviewer_name=reviewer_name if reviewer_name else 'Anonymous',
+            rating=rating,
+            comment=comment
+        )
+        
+        # Calculate new average rating
+        reviews = Review.objects.filter(product=product)
+        avg_rating = 0
+        if reviews.exists():
+            total_rating = sum(r.rating for r in reviews)
+            avg_rating = round(total_rating / reviews.count(), 1)
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Review submitted successfully!',
+            'review': {
+                'id': review.id,
+                'reviewer_name': review.reviewer_name,
+                'rating': review.rating,
+                'comment': review.comment,
+                'created_at': review.created_at.strftime('%B %d, %Y')
+            },
+            'avg_rating': avg_rating,
+            'review_count': reviews.count()
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'message': f'Error submitting review: {str(e)}'
+        }, status=400)
+
+
 def toggle_product_availability(request, product_id):
     """AJAX endpoint for toggling product availability"""
     try:
@@ -425,3 +548,68 @@ def toggle_product_availability(request, product_id):
             'success': False,
             'message': f'Error updating product: {str(e)}'
         }, status=400)
+
+
+@require_POST
+@csrf_exempt
+def submit_site_review(request):
+    """AJAX endpoint to submit site-wide review"""
+    try:
+        # Handle FormData from the form submission
+        reviewer_name = request.POST.get('reviewer_name', '').strip()
+        rating = int(request.POST.get('rating', 0))
+        comment = request.POST.get('comment', '').strip()
+        email = request.POST.get('email', '').strip()
+        
+        # Validate required fields
+        if not rating or rating < 1 or rating > 5:
+            return JsonResponse({
+                'success': False,
+                'error': 'Please provide a valid rating (1-5 stars)'
+            }, status=400)
+        
+        if not comment:
+            return JsonResponse({
+                'success': False,
+                'error': 'Please provide a comment'
+            }, status=400)
+        
+        # Create the site review
+        site_review = SiteReview.objects.create(
+            reviewer_name=reviewer_name if reviewer_name else 'Anonymous',
+            rating=rating,
+            comment=comment,
+            email=email if email else None
+        )
+        
+        # Calculate new average rating
+        site_reviews = SiteReview.objects.filter(is_approved=True)
+        site_avg_rating = 0
+        if site_reviews.exists():
+            total_rating = sum(review.rating for review in site_reviews)
+            site_avg_rating = round(total_rating / site_reviews.count(), 1)
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Thank you for your review!',
+            'review': {
+                'id': site_review.id,
+                'reviewer_name': site_review.reviewer_name,
+                'rating': site_review.rating,
+                'comment': site_review.comment,
+                'created_at': site_review.created_at.strftime('%B %d, %Y')
+            },
+            'new_average': site_avg_rating,
+            'review_count': site_reviews.count()
+        })
+        
+    except ValueError as e:
+        return JsonResponse({
+            'success': False,
+            'message': 'Invalid rating value'
+        }, status=400)
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'message': 'An error occurred while submitting your review'
+        }, status=500)

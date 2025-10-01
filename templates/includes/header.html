@@ -5,7 +5,9 @@
     <div class="header-container">
         <!-- Logo -->
         <div class="logo-section">
-            <img src="{% static 'images/rectangle4984i198-h4uq-200h.png' %}" alt="Dr. Ahmed Store Logo" class="logo-image">
+            <a href="{%url 'home'%}">
+                <img src="{% static 'images/rectangle4984i198-h4uq-200h.png' %}" alt="Dr. Ahmed Store Logo" class="logo-image">
+            </a>
         </div>
 
         <!-- Mobile Menu Toggle -->
@@ -20,9 +22,6 @@
             <ul class="nav-list">
                 <li class="nav-item {% if current_page == 'home' %}active{% endif %}">
                     <a href="{% url 'home' %}" class="nav-link">Home</a>
-                </li>
-                <li class="nav-item {% if current_page == 'catalog' %}active{% endif %}">
-                    <a href="{% url 'catalog' %}" class="nav-link">Catalog</a>
                 </li>
                 <li class="nav-item {% if current_page == 'about' %}active{% endif %}">
                     <a href="{% url 'about' %}" class="nav-link">About Us</a>
@@ -58,9 +57,6 @@
                         <li class="mobile-nav-item {% if current_page == 'home' %}active{% endif %}">
                             <a href="{% url 'home' %}" class="mobile-nav-link">Home</a>
                         </li>
-                        <li class="mobile-nav-item {% if current_page == 'catalog' %}active{% endif %}">
-                            <a href="{% url 'catalog'%}" class="mobile-nav-link">Catalog</a>
-                        </li>
                         <li class="mobile-nav-item {% if current_page == 'about' %}active{% endif %}">
                             <a href="{% url 'about' %}" class="mobile-nav-link">About Us</a>
                         </li>
@@ -91,7 +87,7 @@
         <div class="cart-section">
             <a href="{%url 'cart'%}" class="cart-icon-container" role="button" tabindex="0" aria-label="Shopping cart">
                 <i class="fas fa-shopping-bag "></i>
-                <span class="cart-count" id="cart-count">0</span>
+                <span class="cart-count{% if cart_has_items %} has-items{% endif %}" id="cart-count">{{ cart_total_items }}</span>
             </a>
         </div>
     </div>
@@ -1078,7 +1074,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Update cart count (example function)
+    // Update cart count function
     function updateCartCount(count) {
         if (cartCount) {
             cartCount.textContent = count;
@@ -1089,6 +1085,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
+    
+    // Make updateCartCount globally accessible
+    window.updateCartCount = updateCartCount;
     
     // Header scroll effect
     let lastScrollTop = 0;

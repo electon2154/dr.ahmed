@@ -238,10 +238,10 @@
                 <div class="col-md-4 mb-4 text-start text-white">
                     <h5 class="mb-3 text-white text-start">روابط سريعة</h5>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="text-light text-decoration-none">الرئيسية</a></li>
-                        <li><a href="#" class="text-light text-decoration-none">المنتجات</a></li>
-                        <li><a href="#" class="text-light text-decoration-none">من نحن</a></li>
-                        <li><a href="#" class="text-light text-decoration-none">تواصل معنا</a></li>
+                        <li><a href="{% url 'home' %}" class="text-light text-decoration-none">الرئيسية</a></li>
+                        <li><a href="{% url 'home' %}#products-section" class="text-light text-decoration-none">المنتجات</a></li>
+                        <li><a href="{% url 'about' %}" class="text-light text-decoration-none">من نحن</a></li>
+                        <li><a href="{% url 'contact' %}" class="text-light text-decoration-none">تواصل معنا</a></li>
                     </ul>
                 </div>
                 

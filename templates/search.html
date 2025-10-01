@@ -3,6 +3,42 @@
 
 {% block title %}Search Results - متجر د. أحمد{% endblock %}
 
+{% block extra_css%}
+<style>
+    .product-price {
+        margin: 10px 0;
+    }
+
+    .original-price {
+        text-decoration: line-through;
+        color: #999;
+        font-size: 14px;
+        margin-right: 5px;
+    }
+
+    .discounted-price {
+        color: #e74c3c;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .discount-badge {
+        background-color: #e74c3c;
+        color: white;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 12px;
+        margin-left: 5px;
+    }
+
+    .price {
+        color: #2c3e50;
+        font-weight: bold;
+        font-size: 16px;
+    }
+</style>
+{%endblock%}
+
 {% block content %}
 <div class="search-results-page">
     <!-- Search Header -->
@@ -126,7 +162,7 @@
                 {% endif %}
             </p>
             <div class="no-results-actions">
-                <a href="{% url 'catalog' %}" class="btn btn-primary me-3">
+                <a href="{% url 'home' %}" class="btn btn-primary me-3">
                     <i class="fas fa-th-large"></i> Browse All Products
                 </a>
                 <a href="{% url 'home' %}" class="btn btn-outline-primary">
@@ -298,68 +334,81 @@
 {% block extra_js %}
 <script>
 // Add to Cart functionality
-document.addEventListener('DOMContentLoaded', function() {
-    const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+const csrftoken = getCookie('csrftoken');
+
+function addToCart(productId) {
+    const button = event.target.closest('.add-to-cart');
+    const originalContent = button.innerHTML;
     
-    addToCartButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const productId = this.dataset.productId;
-            const productName = this.dataset.productName;
-            const originalText = this.innerHTML;
+    // Get product ID from data attribute if not passed
+    if (!productId) {
+        productId = button.getAttribute('data-product-id');
+    }
+    
+    // Disable button and show loading state
+    button.disabled = true;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+    
+    fetch('/cart/add/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify({
+            'product_id': productId,
+            'quantity': 1
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show success message
+            button.innerHTML = '<i class="fas fa-check"></i>';
+            button.style.background = '#28a745';
             
-            // Show loading state
-            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
-            this.disabled = true;
+            // Reset button after 2 seconds
+            setTimeout(() => {
+                button.disabled = false;
+                button.innerHTML = originalContent;
+                button.style.background = '#1F1F1F';
+            }, 2000);
             
-            // AJAX request to add to cart
-            fetch('/cart/add/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-                },
-                body: JSON.stringify({
-                    product_id: productId,
-                    quantity: 1
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Show success state
-                    this.innerHTML = '<i class="fas fa-check"></i> Added!';
-                    this.classList.remove('btn-primary');
-                    this.classList.add('btn-success');
-                    
-                    // Update cart count
-                    const cartCount = document.getElementById('cart-count');
-                    if (cartCount) {
-                        cartCount.textContent = data.cart_count;
-                    }
-                    
-                    // Show notification
-                    showNotification(`${productName} added to cart!`, 'success');
-                    
-                    // Reset button after 2 seconds
-                    setTimeout(() => {
-                        this.innerHTML = originalText;
-                        this.classList.remove('btn-success');
-                        this.classList.add('btn-primary');
-                        this.disabled = false;
-                    }, 2000);
-                } else {
-                    throw new Error(data.message || 'Failed to add to cart');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                this.innerHTML = originalText;
-                this.disabled = false;
-                showNotification('Failed to add to cart. Please try again.', 'error');
-            });
-        });
+            // Update cart count using the global function
+            if (typeof window.updateCartCount === 'function') {
+                window.updateCartCount(data.cart_total_items);
+            }
+            
+            // Show success notification
+            showNotification('تم إضافة المنتج إلى السلة بنجاح!', 'success');
+        } else {
+            button.disabled = false;
+            button.innerHTML = originalContent;
+            showNotification('خطأ: ' + data.message, 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        button.disabled = false;
+        button.innerHTML = originalContent;
+        showNotification('حدث خطأ أثناء إضافة المنتج إلى السلة', 'error');
     });
-});
+}
 
 // Notification function
 function showNotification(message, type = 'info') {

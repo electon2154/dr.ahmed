@@ -36,6 +36,29 @@
         height: 33%;
     }   
 
+    .catalog-category{
+        position: relative;
+        background-color: #f9f9f9;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        width: 250px;
+        height: 400px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 15px;
+        margin: 10px;
+        cursor: pointer;
+    }
+
+    .catalog-category:hover{
+        /* shine fillter */
+        filter: brightness(1.5);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        transform: scale(1.05);
+        transition: transform 0.3s ease-in-out;
+    }
+
     .product-card {
         width: 300px;
         height: 400px;
@@ -86,6 +109,60 @@
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+
+    .spacer{
+        height: 2px;
+        background-color: #000;
+        margin: auto;
+    }
+
+    .beauty-category {
+        background-image: url('{% static "images/beauty-category.png" %}');
+    }
+
+    .hair-category {
+        background-image: url('{% static "images/hair-category.png" %}');
+    }
+
+    .skin-category {
+        background-image: url('{% static "images/skin-category.png" %}');
+    }
+
+    .no-products-message {
+        font-size: 18px;
+        color: #666;
+        margin: 50px 0;
+    }
+
+    .add-to-cart.loading {
+        background-color: #95a5a6;
+        pointer-events: none;
+    }
+
+    .add-to-cart.success {
+        background-color: #27ae60;
+    }
+
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #27ae60;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 5px;
+        z-index: 1000;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+    }
+
+    .notification.show {
+        transform: translateX(0);
+    }
+
+    .notification.error {
+        background-color: #e74c3c;
     }
 
     .product-price {
@@ -247,10 +324,286 @@
         font-size: 16px;
     }
 
+    /* Visitor Counter Styles */
+    .visitor-counter-section {
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 20px;
+        padding: 40px 20px;
+        margin: 40px 0;
+        color: black;
+        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.1);
+    }
+
+    .visitor-title {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 30px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .stat-card {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 30px 20px;
+        margin: 10px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+
+    .stat-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: #F15A23;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin: 10px 0;
+        color: #000;
+    }
+
+    .stat-label {
+        font-size: 1.1rem;
+        margin: 0;
+        opacity: 0.9;
+    }
+
+    /* Site Reviews Styles */
+    .site-reviews-section {
+        background: #f8f9fa;
+        border-radius: 20px;
+        padding: 40px 20px;
+        margin: 40px 0;
+    }
+
+    .site-reviews-section h3 {
+        color: #2c3e50;
+        font-weight: bold;
+        font-size: 2.2rem;
+        margin-bottom: 30px;
+    }
+
+    .average-rating {
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        display: inline-block;
+    }
+
+    .stars-display {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+
+    .rating-text {
+        font-size: 1.1rem;
+        color: #666;
+        font-weight: 500;
+    }
+
+    .review-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-left: 4px solid #F15A23;
+        height: 100%;
+    }
+
+    .review-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+    .review-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .reviewer-name {
+        font-weight: bold;
+        color: #2c3e50;
+        margin: 0;
+        font-size: 1.1rem;
+    }
+
+    .review-stars {
+        font-size: 1rem;
+    }
+
+    .review-comment {
+        color: #555;
+        line-height: 1.6;
+        margin: 15px 0;
+        font-style: italic;
+    }
+
+    .review-date {
+        font-size: 0.9rem;
+    }
+
+    .no-reviews-message {
+        font-size: 1.2rem;
+        color: #666;
+        padding: 40px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    /* Review Form Styles */
+    .review-form-container {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        border: 1px solid #e9ecef;
+    }
+
+    .review-form-container h4 {
+        color: #2c3e50;
+        font-weight: bold;
+        margin-bottom: 30px;
+    }
+
+    .site-review-form .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .site-review-form .form-label i {
+        color: #e74c3c;
+        width: 16px;
+    }
+
+    .site-review-form .form-control {
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        padding: 12px 15px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background-color: #f8f9fa;
+    }
+
+    .site-review-form .form-control:focus {
+        border-color: #F15A23;
+        box-shadow: 0 0 0 0.2rem rgba(248, 118, 43, 0.25);
+        background-color: white;
+    }
+
+    .rating-group {
+        text-align: center;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 15px;
+        border: 2px solid #e9ecef;
+    }
+
+    .rating-instruction {
+        color: #666;
+        margin-bottom: 15px;
+        font-size: 0.95rem;
+    }
+
+    .star-rating {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: center;
+        gap: 5px;
+    }
+
+    .star-rating input[type="radio"] {
+        display: none;
+    }
+
+    .star-rating label {
+        cursor: pointer;
+        font-size: 2rem;
+        color: #ddd;
+        transition: all 0.3s ease;
+        padding: 5px;
+    }
+
+    .star-rating label:hover,
+    .star-rating label:hover ~ label,
+    .star-rating input[type="radio"]:checked ~ label {
+        color: #F15A23;
+        transform: scale(1.1);
+        text-shadow: 0 0 10px rgba(241, 90, 35, 0.5);
+    }
+
+    .submit-review-btn {
+        border: none;
+        border-radius: 25px;
+        padding: 15px 40px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .submit-review-btn:active {
+        transform: translateY(0);
+    }
+
+    @media screen and (max-width: 768px) {
+        .visitor-title {
+            font-size: 2rem;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+        }
+        
+        .stat-icon {
+            font-size: 2.5rem;
+        }
+        
+        .review-form-container {
+            padding: 25px;
+        }
+        
+        .star-rating label {
+            font-size: 1.5rem;
+        }
+    }
+
     @media screen and (max-width: 430px) {
       .title {
         font-size: calc(1.0rem + 1.5vw);
       }
+      
+      .visitor-counter-section,
+      .site-reviews-section,
+      .review-form-container {
+          margin: 20px 10px;
+          padding: 20px 15px;
+      }
+      
+      .visitor-title {
+          font-size: 1.5rem;
+      }
+    }
+
+    .text-warning {
+        color: #F15A23 !important;
     }
 </style>
 {%endblock%}
@@ -272,7 +625,7 @@
       <div class="pargraph col-8 d-flex flex-column justify-content-center align-items-end">
         <h1 class="p-2">Back To Nature</h1>
         <p class="p-2">منتجات طبيعية مصنعة بيد البروفيسور د.احمد هاشم الرفاعي, استاذ الصيدلة الصناعية, تركيبات دقيقة خالية من الاضافات الضارة, صممت لتعيد لبشرتك توازنها ونضارتها.</p>
-        <a class="btn btn-primary text-white d-flex flex-row align-items-center" href="{%url 'catalog'%}">
+        <a class="btn btn-primary text-white d-flex flex-row align-items-center" href="#products-section">
           <i class="fas fa-arrow-left p-2 text-white"></i>
           جربي الفرق الان
         </a>
@@ -288,13 +641,36 @@
 
     <br>
 
-    <h1 class="text-center">استكشف احدث المنتجات</h1>
+    <h1 class="text-center" id="products-section">اختر القسم الذي يناسبك</h1>
+
     <br>
 
-    <!-- Product Cards -->
+    <div class="row justify-content-around">
+        <a href="{% url 'home' %}?category=beauty" class="catalog-category beauty-category" style="text-decoration: none;">
+        </a>
+        <a href="{% url 'home' %}?category=hair" class="catalog-category hair-category" style="text-decoration: none;">
+        </a>
+        <a href="{% url 'home' %}?category=skin" class="catalog-category skin-category" style="text-decoration: none;">
+        </a>
+    </div>
+
+    <br>
+    <div class="row d-flex flex-row ju">
+        <div class="col-4 spacer"></div>
+        <div class="col-4 text-center">
+            <h1>{% if selected_category %}منتجات {{ selected_category }}{% else %}كل المنتجات{% endif %}</h1>
+            {% if selected_category %}
+                <a href="{% url 'home' %}" class="btn btn-primary btn-sm mt-2">عرض جميع المنتجات</a>
+            {% endif %}
+        </div>
+        <div class="col-4 spacer"></div>
+    </div>
+    <br>
+
+    <!-- all products -->
     <div class="row justify-content-center">
-        {% if recent_products %}
-            {% for product in recent_products %}
+        {% if all_products %}
+            {% for product in all_products %}
                 <div class="card product-card">
                     <div class="product-image">
                         <a href="{% url 'product' product.id %}">
@@ -325,16 +701,9 @@
             {% endfor %}
         {% else %}
             <div class="col-12 text-center">
-                <p class="text-muted">لا توجد منتجات متاحة حالياً</p>
-                <a href="{% url 'catalog' %}" class="btn btn-primary">تصفح الكتالوج</a>
+                <p class="no-products-message">لا توجد منتجات متاحة حالياً</p>
             </div>
         {% endif %}
-    </div>
-
-    <br>
-
-    <div class="text-center">
-        <a href="{%url 'catalog'%}" class="btn btn-primary">مشاهدة المزيد</a>
     </div>
 
     <br>
@@ -373,6 +742,152 @@
 
     <br>
 
+    <!-- Visitor Counter Section -->
+    <div class="visitor-counter-section text-center mb-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="visitor-stats-container">
+                    <h3 class="visitor-title">إحصائيات الموقع</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="stat-card">
+                                <i class="fas fa-users stat-icon"></i>
+                                <h4 class="stat-number">{{ total_visitors }}</h4>
+                                <p class="stat-label">إجمالي الزوار</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="stat-card">
+                                <i class="fas fa-calendar-day stat-icon"></i>
+                                <h4 class="stat-number">{{ today_visitors }}</h4>
+                                <p class="stat-label">زوار اليوم</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Site Reviews Section -->
+    <div class="site-reviews-section mb-5">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <h3 class="text-center mb-4">آراء عملائنا</h3>
+                
+                <!-- Average Rating Display -->
+                {% if average_rating %}
+                <div class="text-center mb-4">
+                    <div class="average-rating">
+                        <div class="stars-display">
+                            {% for i in "12345"|make_list %}
+                                {% if forloop.counter <= average_rating %}
+                                    <i class="fas fa-star text-warning"></i>
+                                {% else %}
+                                    <i class="far fa-star text-warning"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <span class="rating-text">{{ average_rating|floatformat:1 }} من 5 ({{ review_count }} تقييم)</span>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Reviews Display -->
+                <div class="reviews-container">
+                    {% if site_reviews %}
+                        <div class="row">
+                            {% for review in site_reviews %}
+                            <div class="col-md-6 mb-3">
+                                <div class="review-card">
+                                    <div class="review-header">
+                                        <h6 class="reviewer-name">{{ review.reviewer_name }}</h6>
+                                        <div class="review-stars">
+                                            {% for i in "12345"|make_list %}
+                                                {% if forloop.counter <= review.rating %}
+                                                    <i class="fas fa-star text-warning"></i>
+                                                {% else %}
+                                                    <i class="far fa-star text-warning"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <p class="review-comment">{{ review.comment }}</p>
+                                    <small class="review-date text-muted">{{ review.created_at|date:"d M Y" }}</small>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center">
+                            <p class="no-reviews-message">كن أول من يقيم موقعنا!</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Review Submission Form -->
+                <div class="review-form-container mt-4">
+                    <h4 class="text-center mb-3">شاركنا رأيك</h4>
+                    <form id="siteReviewForm" class="site-review-form">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="reviewerName" class="form-label">
+                                        <i class="fas fa-user"></i> الاسم
+                                    </label>
+                                    <input type="text" class="form-control" id="reviewerName" name="reviewer_name" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="reviewerEmail" class="form-label">
+                                        <i class="fas fa-envelope"></i> البريد الإلكتروني (اختياري)
+                                    </label>
+                                    <input type="email" class="form-control" id="reviewerEmail" name="email">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-star"></i> التقييم
+                            </label>
+                            <div class="rating-group">
+                                <p class="rating-instruction">اختر تقييمك من 1 إلى 5 نجوم</p>
+                                <div class="star-rating">
+                                    <input type="radio" id="star5" name="rating" value="5" required>
+                                    <label for="star5" data-rating="5"><i class="fas fa-star"></i></label>
+                                    <input type="radio" id="star4" name="rating" value="4">
+                                    <label for="star4" data-rating="4"><i class="fas fa-star"></i></label>
+                                    <input type="radio" id="star3" name="rating" value="3">
+                                    <label for="star3" data-rating="3"><i class="fas fa-star"></i></label>
+                                    <input type="radio" id="star2" name="rating" value="2">
+                                    <label for="star2" data-rating="2"><i class="fas fa-star"></i></label>
+                                    <input type="radio" id="star1" name="rating" value="1">
+                                    <label for="star1" data-rating="1"><i class="fas fa-star"></i></label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="reviewComment" class="form-label">
+                                <i class="fas fa-comment"></i> تعليقك
+                            </label>
+                            <textarea class="form-control" id="reviewComment" name="comment" rows="4" placeholder="شاركنا تجربتك مع موقعنا..." required></textarea>
+                        </div>
+                        
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg submit-review-btn">
+                                <i class="fas fa-paper-plane"></i> إرسال التقييم
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div>
         {% include 'includes/slider.html' %}
     </div>
@@ -380,6 +895,9 @@
 
 </div>
 
+{% endblock %}
+
+{% block extra_js %}
 <script>
 // Get CSRF token
 function getCookie(name) {
@@ -437,10 +955,9 @@ function addToCart(productId) {
                 button.style.background = '#1F1F1F';
             }, 2000);
             
-            // Update cart count if there's a cart counter in the navigation
-            const cartCounter = document.querySelector('.cart-count');
-            if (cartCounter) {
-                cartCounter.textContent = data.cart_total_items;
+            // Update cart count using the global function
+            if (typeof window.updateCartCount === 'function') {
+                window.updateCartCount(data.cart_total_items);
             }
             
             // Show success notification
@@ -487,6 +1004,162 @@ function showNotification(message, type) {
         }, 300);
     }, 3000);
 }
-</script>
 
-{%endblock%}
+// Site Review Form Submission
+document.addEventListener('DOMContentLoaded', function() {
+    const siteReviewForm = document.getElementById('siteReviewForm');
+    
+    if (siteReviewForm) {
+        siteReviewForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const submitBtn = this.querySelector('.submit-review-btn');
+            const originalBtnText = submitBtn.innerHTML;
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
+            
+            fetch('/site-review/submit/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show success message
+                    showNotification('شكراً لك! تم إرسال تقييمك بنجاح وسيتم مراجعته قريباً.', 'success');
+                    
+                    // Add new review to the reviews container
+                    const reviewsContainer = document.querySelector('.reviews-container');
+                    const noReviewsMessage = reviewsContainer.querySelector('.no-reviews-message');
+                    
+                    // Remove "no reviews" message if it exists
+                    if (noReviewsMessage) {
+                        noReviewsMessage.parentElement.remove();
+                    }
+                    
+                    // Create new review element
+                    const newReviewHtml = `
+                        <div class="col-md-6 mb-3">
+                            <div class="review-card">
+                                <div class="review-header">
+                                    <h6 class="reviewer-name">${data.review.reviewer_name}</h6>
+                                    <div class="review-stars">
+                                        ${Array.from({length: 5}, (_, i) => 
+                                            i < data.review.rating 
+                                                ? '<i class="fas fa-star text-warning"></i>' 
+                                                : '<i class="far fa-star text-warning"></i>'
+                                        ).join('')}
+                                    </div>
+                                </div>
+                                <p class="review-comment">${data.review.comment}</p>
+                                <small class="review-date text-muted">${data.review.created_at}</small>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Add new review to the container
+                    let reviewsRow = reviewsContainer.querySelector('.row');
+                    if (!reviewsRow) {
+                        reviewsRow = document.createElement('div');
+                        reviewsRow.className = 'row';
+                        reviewsContainer.appendChild(reviewsRow);
+                    }
+                    reviewsRow.insertAdjacentHTML('afterbegin', newReviewHtml);
+                    
+                    // Reset form
+                    siteReviewForm.reset();
+                    
+                    // Reset star rating visual state
+                    const starLabels = siteReviewForm.querySelectorAll('.star-rating label');
+                    starLabels.forEach(label => {
+                        label.style.color = '#ddd';
+                        label.style.transform = 'scale(1)';
+                        label.style.textShadow = 'none';
+                    });
+                    
+                    // Update average rating display if provided
+                    if (data.new_average) {
+                        const avgRatingElement = document.querySelector('.rating-text');
+                        if (avgRatingElement) {
+                            avgRatingElement.textContent = `${data.new_average} من 5 (${data.review_count} تقييم)`;
+                        }
+                    }
+                } else {
+                    showNotification('خطأ: ' + (data.message || 'حدث خطأ أثناء إرسال التقييم'), 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('حدث خطأ أثناء إرسال التقييم. يرجى المحاولة مرة أخرى.', 'error');
+            })
+            .finally(() => {
+                // Reset button state
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+            });
+        });
+        
+        // Enhanced star rating interaction
+        const starInputs = siteReviewForm.querySelectorAll('.star-rating input[type="radio"]');
+        const starLabels = siteReviewForm.querySelectorAll('.star-rating label');
+        
+        starLabels.forEach((label, index) => {
+            label.addEventListener('mouseenter', function() {
+                const rating = parseInt(this.getAttribute('data-rating'));
+                highlightStars(rating);
+            });
+            
+            label.addEventListener('click', function() {
+                const rating = parseInt(this.getAttribute('data-rating'));
+                selectStars(rating);
+            });
+        });
+        
+        // Reset stars on mouse leave from rating container
+        const starRating = siteReviewForm.querySelector('.star-rating');
+        starRating.addEventListener('mouseleave', function() {
+            const checkedInput = siteReviewForm.querySelector('.star-rating input[type="radio"]:checked');
+            if (checkedInput) {
+                const rating = parseInt(checkedInput.value);
+                selectStars(rating);
+            } else {
+                resetStars();
+            }
+        });
+        
+        function highlightStars(rating) {
+            starLabels.forEach((label, index) => {
+                const labelRating = parseInt(label.getAttribute('data-rating'));
+                if (labelRating <= rating) {
+                    label.style.color = '#ffd700';
+                    label.style.transform = 'scale(1.1)';
+                    label.style.textShadow = '0 0 10px rgba(255, 215, 0, 0.5)';
+                } else {
+                    label.style.color = '#ddd';
+                    label.style.transform = 'scale(1)';
+                    label.style.textShadow = 'none';
+                }
+            });
+        }
+        
+        function selectStars(rating) {
+            highlightStars(rating);
+        }
+        
+        function resetStars() {
+            starLabels.forEach(label => {
+                label.style.color = '#ddd';
+                label.style.transform = 'scale(1)';
+                label.style.textShadow = 'none';
+            });
+        }
+    }
+});
+</script>
+{% endblock %}
